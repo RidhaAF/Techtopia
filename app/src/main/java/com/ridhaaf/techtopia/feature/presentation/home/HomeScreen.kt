@@ -30,6 +30,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,18 +42,14 @@ import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.VerticalSpacer
 import com.ridhaaf.techtopia.core.utils.currencyFormatter
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController? = null,
 ) {
-    Scaffold(topBar = {
-        TopAppBar(title = { Text(text = "Techtopia") }, actions = {
-            SearchButton()
-            CartButton()
-        })
-    }) {
+    Scaffold(
+        topBar = { TopBar() },
+    ) {
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -61,6 +58,21 @@ fun HomeScreen(
             HomeContent()
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun TopBar() {
+    TopAppBar(
+        title = { Text(text = "Techtopia") },
+        actions = {
+            SearchButton()
+            CartButton()
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.inversePrimary,
+        ),
+    )
 }
 
 @Composable
@@ -93,7 +105,6 @@ private fun HomeContent() {
             .verticalScroll(verticalScrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        VerticalSpacer()
         Banner()
         Categories()
         BestSeller()
@@ -107,11 +118,20 @@ private fun Banner() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .aspectRatio(16f / 9f)
-            .clip(shape = RoundedCornerShape(8.dp))
-            .background(color = MaterialTheme.colorScheme.secondary)
-    )
+            .background(
+                color = MaterialTheme.colorScheme.inversePrimary,
+                shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp),
+            )
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .aspectRatio(16f / 9f)
+                .clip(shape = RoundedCornerShape(8.dp))
+                .background(color = MaterialTheme.colorScheme.secondary)
+        )
+    }
 }
 
 @Composable
