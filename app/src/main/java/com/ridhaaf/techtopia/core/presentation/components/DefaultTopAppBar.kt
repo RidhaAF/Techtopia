@@ -17,6 +17,7 @@ fun DefaultTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
     navigationIcon: @Composable () -> Unit = {},
+    isActionsEnabled: Boolean = true,
     actions: @Composable () -> Unit = {},
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(),
 ) {
@@ -25,16 +26,18 @@ fun DefaultTopAppBar(
         modifier = modifier,
         navigationIcon = navigationIcon,
         actions = {
-            ActionButton(
-                onClick = { /*TODO*/ },
-                icon = Icons.Rounded.Search,
-                desc = "Search",
-            )
-            ActionButton(
-                onClick = { /*TODO*/ },
-                icon = Icons.Rounded.ShoppingCart,
-                desc = "Cart",
-            )
+            if (isActionsEnabled) {
+                ActionButton(
+                    onClick = { /*TODO*/ },
+                    icon = Icons.Rounded.Search,
+                    desc = "Search",
+                )
+                ActionButton(
+                    onClick = { /*TODO*/ },
+                    icon = Icons.Rounded.ShoppingCart,
+                    desc = "Cart",
+                )
+            }
             actions()
         },
         colors = colors,
