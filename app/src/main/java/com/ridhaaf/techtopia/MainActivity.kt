@@ -19,9 +19,13 @@ import androidx.navigation.compose.rememberNavController
 import com.ridhaaf.techtopia.core.presentation.components.DefaultBottomNavigation
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
+import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +68,11 @@ fun App() {
         ) {
             composable(Routes.SIGN_IN) {
                 SignInScreen(
+                    navController = navController,
+                )
+            }
+            composable(Routes.SIGN_UP) {
+                SignUpScreen(
                     navController = navController,
                 )
             }

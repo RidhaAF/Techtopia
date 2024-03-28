@@ -1,4 +1,4 @@
-package com.ridhaaf.techtopia.feature.presentation.auth.sign_in
+package com.ridhaaf.techtopia.feature.presentation.auth.sign_up
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,15 +33,16 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.RedirectToAuth
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
+import java.util.Locale
 
 @Composable
-fun SignInScreen(
+fun SignUpScreen(
     modifier: Modifier = Modifier,
-    viewModel: SignInViewModel = hiltViewModel(),
+    viewModel: SignUpViewModel = hiltViewModel(),
     navController: NavController? = null,
 ) {
     val state = viewModel.state.value
-    val error = state.signInError
+    val error = state.signUpError
     val context = LocalContext.current
 
     LaunchedEffect(key1 = error) {
@@ -58,7 +59,7 @@ fun SignInScreen(
                 .fillMaxSize()
                 .padding(it),
         ) {
-            SignInContent(
+            SignUpContent(
                 viewModel = viewModel,
                 state = state,
                 navController = navController,
@@ -71,15 +72,15 @@ fun SignInScreen(
 @Composable
 private fun TopBar() {
     DefaultTopAppBar(
-        title = "Sign In",
+        title = "Sign Up",
         isActionsEnabled = false,
     )
 }
 
 @Composable
-private fun SignInContent(
-    viewModel: SignInViewModel,
-    state: SignInState,
+private fun SignUpContent(
+    viewModel: SignUpViewModel,
+    state: SignUpState,
     navController: NavController?,
 ) {
     val verticalScrollState = rememberScrollState()
@@ -91,9 +92,12 @@ private fun SignInContent(
             .verticalScroll(verticalScrollState),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        NameTextField(viewModel)
+        UsernameTextField(viewModel)
         EmailTextField(viewModel)
         PasswordTextField(viewModel)
-        SignInButton(
+        ConfirmPasswordTextField(viewModel)
+        SignUpButton(
             viewModel = viewModel,
             state = state,
             navController = navController,
@@ -103,31 +107,56 @@ private fun SignInContent(
 }
 
 @Composable
-private fun EmailTextField(viewModel: SignInViewModel) {
+private fun NameTextField(viewModel: SignUpViewModel) {
+    DefaultTextField(
+        value = viewModel.name,
+        onValueChange = { viewModel.onEvent(SignUpEvent.Name(it)) },
+        placeholder = "Name",
+    )
+}
+
+@Composable
+private fun UsernameTextField(viewModel: SignUpViewModel) {
+    DefaultTextField(
+        value = viewModel.username,
+        onValueChange = { viewModel.onEvent(SignUpEvent.Username(it)) },
+        placeholder = "Username",
+    )
+}
+
+@Composable
+private fun EmailTextField(viewModel: SignUpViewModel) {
     DefaultTextField(
         value = viewModel.email,
-        onValueChange = { viewModel.onEvent(SignInEvent.Email(it)) },
+        onValueChange = { viewModel.onEvent(SignUpEvent.Email(it)) },
         placeholder = "Email",
     )
 }
 
 @Composable
-private fun PasswordTextField(viewModel: SignInViewModel) {
+private fun PasswordTextFieldContent(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+) {
     var passwordVisibility by rememberSaveable { mutableStateOf(false) }
 
     DefaultTextField(
-        value = viewModel.password,
-        onValueChange = { viewModel.onEvent(SignInEvent.Password(it)) },
-        placeholder = "Password",
+        value = value,
+        onValueChange = onValueChange,
+        placeholder = placeholder,
         isObscure = !passwordVisibility,
         trailingIcon = {
             IconButton(
-                onClick = { passwordVisibility = !passwordVisibility },
+                onClick = {
+                    passwordVisibility = !passwordVisibility
+                },
             ) {
                 val icon = if (passwordVisibility) Icons.Rounded.VisibilityOff
                 else Icons.Rounded.Visibility
-                val contentDescription = if (passwordVisibility) "Hide password"
-                else "Show password"
+                val contentDescription =
+                    if (passwordVisibility) "Hide ${placeholder.lowercase(Locale.getDefault())}"
+                    else "Show ${placeholder.lowercase(Locale.getDefault())}"
 
                 Icon(
                     imageVector = icon,
@@ -139,19 +168,37 @@ private fun PasswordTextField(viewModel: SignInViewModel) {
 }
 
 @Composable
-private fun SignInButton(
-    viewModel: SignInViewModel,
-    state: SignInState,
+fun PasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
+        value = viewModel.password,
+        onValueChange = { viewModel.onEvent(SignUpEvent.Password(it)) },
+        placeholder = "Password",
+    )
+}
+
+@Composable
+fun ConfirmPasswordTextField(viewModel: SignUpViewModel) {
+    PasswordTextFieldContent(
+        value = viewModel.confirmPassword,
+        onValueChange = { viewModel.onEvent(SignUpEvent.ConfirmPassword(it)) },
+        placeholder = "Confirm Password",
+    )
+}
+
+@Composable
+private fun SignUpButton(
+    viewModel: SignUpViewModel,
+    state: SignUpState,
     navController: NavController?,
 ) {
-    val text = if (state.isSignInLoading) "Signing in..." else "Sign in"
+    val text = if (state.isSignUpLoading) "Signing up..." else "Sign up"
 
     DefaultButton(
-        onClick = { viewModel.onEvent(SignInEvent.SignIn) },
+        onClick = { viewModel.onEvent(SignUpEvent.SignUp) },
         child = { Text(text) },
     )
 
-    if (state.signInSuccess != null) {
+    if (state.signUpSuccess != null) {
         navController?.navigate(Routes.HOME)
     }
 }
@@ -159,7 +206,7 @@ private fun SignInButton(
 @Composable
 private fun RedirectToSignIn(navController: NavController?) {
     RedirectToAuth(
-        onClick = { navController?.navigate(Routes.SIGN_UP) },
-        title = "Don't have an account? Sign Up",
+        onClick = { navController?.popBackStack() },
+        title = "Already have an account? Sign In",
     )
 }

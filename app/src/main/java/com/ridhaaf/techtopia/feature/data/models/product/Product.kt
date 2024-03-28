@@ -1,4 +1,6 @@
-package com.ridhaaf.techtopia.feature.data
+package com.ridhaaf.techtopia.feature.data.models.product
+
+import com.ridhaaf.techtopia.feature.data.models.category.Category
 
 data class Product(
     val id: Int,
@@ -8,5 +10,6 @@ data class Product(
     val description: String,
     val rating: Double,
     val sold: Int,
+    val stock: Int,
     val category: Category,
 )
