@@ -199,7 +199,11 @@ private fun SignUpButton(
     )
 
     if (state.signUpSuccess != null) {
-        navController?.navigate(Routes.HOME)
+        navController?.navigate(Routes.HOME) {
+            popUpTo(Routes.SIGN_UP) {
+                inclusive = true
+            }
+        }
     }
 }
 

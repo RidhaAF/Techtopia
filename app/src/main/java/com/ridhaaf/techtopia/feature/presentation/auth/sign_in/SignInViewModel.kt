@@ -7,13 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
-    // private val useCase: SignInUseCase,
+    private val useCase: AuthUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(SignInState())
     val state: State<SignInState> = _state
@@ -26,7 +28,33 @@ class SignInViewModel @Inject constructor(
 
     private fun signIn(email: String, password: String) {
         viewModelScope.launch {
+            useCase.signIn(
+                email = email,
+                password = password,
+            ).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = SignInState(
+                            isSignInLoading = true,
+                        )
+                    }
 
+                    is Resource.Success -> {
+                        _state.value = SignInState(
+                            isSignInLoading = false,
+                            signInSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = SignInState(
+                            isSignInLoading = false,
+                            signInSuccess = null,
+                            signInError = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                }
+            }
         }
     }
 

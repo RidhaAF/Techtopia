@@ -24,7 +24,6 @@ import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

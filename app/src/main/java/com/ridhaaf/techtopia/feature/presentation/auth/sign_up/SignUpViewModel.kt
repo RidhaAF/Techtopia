@@ -7,13 +7,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    // private val useCase: SignUpUseCase,
+    private val useCase: AuthUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(SignUpState())
     val state: State<SignUpState> = _state
@@ -40,7 +42,36 @@ class SignUpViewModel @Inject constructor(
         password: String,
     ) {
         viewModelScope.launch {
+            useCase.signUp(
+                name = name,
+                username = username,
+                email = email,
+                password = password,
+            ).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = SignUpState(
+                            isSignUpLoading = true,
+                        )
+                    }
 
+                    is Resource.Success -> {
+                        _state.value = SignUpState(
+                            isSignUpLoading = false,
+                            signUpSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = SignUpState(
+                            isSignUpLoading = false,
+                            signUpSuccess = null,
+                            signUpError = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                }
+
+            }
         }
     }
 
@@ -67,7 +98,7 @@ class SignUpViewModel @Inject constructor(
             }
 
             is SignUpEvent.SignUp -> {
-                if (name.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                if (name.isBlank() || username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
                     _state.value = SignUpState(
                         signUpError = "Please fill in all the fields"
                     )

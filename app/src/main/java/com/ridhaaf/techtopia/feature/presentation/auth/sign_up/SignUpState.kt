@@ -1,9 +1,9 @@
 package com.ridhaaf.techtopia.feature.presentation.auth.sign_up
 
-import com.ridhaaf.techtopia.feature.data.models.user.User
+import io.github.jan.supabase.gotrue.providers.builtin.Email
 
 data class SignUpState(
     val isSignUpLoading: Boolean = false,
-    val signUpSuccess: User? = null,
+    val signUpSuccess: Email.Result? = null,
     val signUpError: String = "",
 )

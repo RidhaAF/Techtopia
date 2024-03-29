@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.daggerHiltAndroid)
 }
@@ -66,6 +67,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -73,6 +75,11 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Supabase
+    implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.supabase.storage.kt)
 
     // Dagger - Hilt
     implementation(libs.dagger.hilt.android)
@@ -87,4 +94,10 @@ dependencies {
 
     // Coil
     implementation(libs.coil.compose)
+
+    // Ktor
+    implementation(libs.ktor.client.android)
+
+    // dotenv
+    implementation(libs.dotenv)
 }

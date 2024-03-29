@@ -152,7 +152,11 @@ private fun SignInButton(
     )
 
     if (state.signInSuccess != null) {
-        navController?.navigate(Routes.HOME)
+        navController?.navigate(Routes.HOME) {
+            popUpTo(Routes.SIGN_IN) {
+                inclusive = true
+            }
+        }
     }
 }
 
