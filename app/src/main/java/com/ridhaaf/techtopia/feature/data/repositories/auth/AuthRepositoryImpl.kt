@@ -7,26 +7,34 @@ import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val supabase: SupabaseClient,
+    supabase: SupabaseClient,
 ) : AuthRepository {
+    val auth = supabase.auth
+
     override fun signUp(
         name: String,
         username: String,
         email: String,
         password: String,
-    ): Flow<Resource<Email.Result?>> = flow {
+    ): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
 
-            val user = supabase.auth.signUpWith(Email) {
+            auth.signUpWith(Email) {
                 this.email = email
                 this.password = password
+                this.data = buildJsonObject {
+                    put("display_name", name)
+                    put("username", username)
+                }
             }
 
-            emit(Resource.Success(user))
+            emit(Resource.Success(Unit))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
@@ -39,10 +47,10 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
 
-             val user = supabase.auth.signInWith(Email) {
-                 this.email = email
-                 this.password = password
-             }
+            val user = auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
 
             emit(Resource.Success(user))
         } catch (e: Exception) {
@@ -54,7 +62,7 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
 
-             val user = supabase.auth.signOut()
+            val user = auth.signOut()
 
             emit(Resource.Success(user))
         } catch (e: Exception) {

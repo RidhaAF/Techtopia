@@ -2,7 +2,6 @@ package com.ridhaaf.techtopia.feature.domain.usecases.auth
 
 import com.ridhaaf.techtopia.core.utils.Resource
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
-import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.flow.Flow
 
 class AuthUseCase(private val repository: AuthRepository) {
@@ -11,7 +10,7 @@ class AuthUseCase(private val repository: AuthRepository) {
         username: String,
         email: String,
         password: String,
-    ): Flow<Resource<Email.Result?>> {
+    ): Flow<Resource<Unit>> {
         return repository.signUp(name, username, email, password)
     }
 
