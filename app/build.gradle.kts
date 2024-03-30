@@ -78,6 +78,7 @@ dependencies {
 
     // Supabase
     implementation(platform(libs.supabase.bom))
+    implementation(libs.supabase.gotrue.kt)
     implementation(libs.supabase.postgrest.kt)
     implementation(libs.supabase.storage.kt)
 

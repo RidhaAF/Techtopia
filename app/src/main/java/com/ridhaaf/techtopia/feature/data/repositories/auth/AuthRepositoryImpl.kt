@@ -3,18 +3,22 @@ package com.ridhaaf.techtopia.feature.data.repositories.auth
 import com.ridhaaf.techtopia.core.utils.Resource
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import javax.inject.Inject
 
+@OptIn(ExperimentalSerializationApi::class)
 class AuthRepositoryImpl @Inject constructor(
-    supabase: SupabaseClient,
+    private val supabase: SupabaseClient,
 ) : AuthRepository {
-    val auth = supabase.auth
+    val auth: Auth = supabase.auth
 
     override fun signUp(
         name: String,
@@ -31,8 +35,10 @@ class AuthRepositoryImpl @Inject constructor(
                 this.data = buildJsonObject {
                     put("display_name", name)
                     put("username", username)
+                    put("photo_url", null)
                 }
             }
+            insertUser(name, username, email)
 
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
@@ -68,5 +74,19 @@ class AuthRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
+    }
+
+    private suspend fun insertUser(
+        name: String,
+        username: String,
+        email: String,
+    ) {
+        val user = buildJsonObject {
+            put("name", name)
+            put("username", username)
+            put("email", email)
+            put("photo_url", null)
+        }
+        supabase.from("users").insert(user)
     }
 }
