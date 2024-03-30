@@ -65,7 +65,7 @@ class SignInViewModel @Inject constructor(
             useCase.isAuth().collect { result ->
                 isAuthenticated = when (result) {
                     is Resource.Success -> {
-                        true
+                        result.data != null
                     }
 
                     else -> {

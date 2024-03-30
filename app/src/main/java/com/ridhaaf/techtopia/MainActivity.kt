@@ -21,6 +21,7 @@ import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
+import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -77,6 +78,11 @@ fun App() {
             }
             composable(Routes.HOME) {
                 HomeScreen(
+                    navController = navController,
+                )
+            }
+            composable(Routes.PROFILE) {
+                ProfileScreen(
                     navController = navController,
                 )
             }

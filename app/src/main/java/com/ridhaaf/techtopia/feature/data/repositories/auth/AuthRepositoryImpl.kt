@@ -1,6 +1,7 @@
 package com.ridhaaf.techtopia.feature.data.repositories.auth
 
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.data.models.user.User
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.Auth
@@ -77,11 +78,32 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun isAuth(): Flow<Resource<UserSession?>> = flow{
+    override fun isAuth(): Flow<Resource<UserSession?>> = flow {
         try {
             emit(Resource.Loading())
 
             val user = auth.currentSessionOrNull()
+
+            emit(Resource.Success(user))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun getCurrentUser(): Flow<Resource<User>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val result = auth.retrieveUserForCurrentSession(updateSession = true).identities
+            val identities = result?.firstOrNull()
+            val identity = identities?.identityData
+            val id = identities?.id ?: ""
+            val user = User()
+            user.id = id
+            user.name = identity?.get("display_name").toString()
+            user.username = identity?.get("username").toString()
+            user.email = identity?.get("email").toString()
+            user.photoUrl = identity?.get("photo_url").toString()
 
             emit(Resource.Success(user))
         } catch (e: Exception) {

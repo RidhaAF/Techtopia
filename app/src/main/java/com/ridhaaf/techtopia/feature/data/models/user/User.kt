@@ -1,10 +1,12 @@
 package com.ridhaaf.techtopia.feature.data.models.user
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class User(
-    val id: Int,
-    val name: String,
-    val username: String,
-    val email: String,
-    val password: String,
-    val photoUrl: String,
+    var id: String = "",
+    var name: String = "",
+    var username: String = "",
+    var email: String = "",
+    var photoUrl: String? = null,
 )
