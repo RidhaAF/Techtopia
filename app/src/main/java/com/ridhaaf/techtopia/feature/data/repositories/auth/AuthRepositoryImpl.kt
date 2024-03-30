@@ -6,6 +6,7 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.gotrue.user.UserSession
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -69,6 +70,18 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
 
             val user = auth.signOut()
+
+            emit(Resource.Success(user))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun isAuth(): Flow<Resource<UserSession?>> = flow{
+        try {
+            emit(Resource.Loading())
+
+            val user = auth.currentSessionOrNull()
 
             emit(Resource.Success(user))
         } catch (e: Exception) {

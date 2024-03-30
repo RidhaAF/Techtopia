@@ -1,6 +1,7 @@
 package com.ridhaaf.techtopia.feature.domain.repositories.auth
 
 import com.ridhaaf.techtopia.core.utils.Resource
+import io.github.jan.supabase.gotrue.user.UserSession
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
@@ -17,4 +18,6 @@ interface AuthRepository {
     ): Flow<Resource<Unit>>
 
     fun signOut(): Flow<Resource<Unit>>
+
+    fun isAuth(): Flow<Resource<UserSession?>>
 }

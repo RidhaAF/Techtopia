@@ -26,6 +26,8 @@ class SignInViewModel @Inject constructor(
     var password by mutableStateOf("")
         private set
 
+    private var isAuthenticated by mutableStateOf(false)
+
     private fun signIn(email: String, password: String) {
         viewModelScope.launch {
             useCase.signIn(
@@ -56,6 +58,23 @@ class SignInViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun isAuth(): Boolean {
+        viewModelScope.launch {
+            useCase.isAuth().collect { result ->
+                isAuthenticated = when (result) {
+                    is Resource.Success -> {
+                        true
+                    }
+
+                    else -> {
+                        false
+                    }
+                }
+            }
+        }
+        return isAuthenticated
     }
 
     fun onEvent(event: SignInEvent) {

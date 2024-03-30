@@ -32,7 +32,7 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultTextField
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.RedirectToAuth
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
-import com.ridhaaf.techtopia.core.presentation.routes.Routes
+import com.ridhaaf.techtopia.core.utils.redirectFromAuth
 import java.util.Locale
 
 @Composable
@@ -199,11 +199,7 @@ private fun SignUpButton(
     )
 
     if (state.signUpSuccess != null) {
-        navController?.navigate(Routes.HOME) {
-            popUpTo(Routes.SIGN_UP) {
-                inclusive = true
-            }
-        }
+        redirectFromAuth(navController)
     }
 }
 

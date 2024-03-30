@@ -33,6 +33,7 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.RedirectToAuth
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
+import com.ridhaaf.techtopia.core.utils.redirectFromAuth
 
 @Composable
 fun SignInScreen(
@@ -43,6 +44,12 @@ fun SignInScreen(
     val state = viewModel.state.value
     val error = state.signInError
     val context = LocalContext.current
+
+    LaunchedEffect(key1 = viewModel.isAuth()) {
+        if (viewModel.isAuth()) {
+            redirectFromAuth(navController)
+        }
+    }
 
     LaunchedEffect(key1 = error) {
         if (error.isNotBlank()) {
@@ -152,11 +159,7 @@ private fun SignInButton(
     )
 
     if (state.signInSuccess != null) {
-        navController?.navigate(Routes.HOME) {
-            popUpTo(Routes.SIGN_IN) {
-                inclusive = true
-            }
-        }
+        redirectFromAuth(navController)
     }
 }
 
