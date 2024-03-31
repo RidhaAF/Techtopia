@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ridhaaf.techtopia.feature.data.Product
+import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @Composable
 fun ProductsList(products: List<Product>) {
