@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.ActionButton
+import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
@@ -54,12 +56,21 @@ fun ProfileScreen(
             )
         },
     ) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(it),
-        ) {
-            ProfileContent(state = state)
+        if (state.isUserLoading) {
+            Box(
+                modifier = modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                DefaultProgressIndicator()
+            }
+        } else {
+            Box(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(it),
+            ) {
+                ProfileContent(state = state)
+            }
         }
     }
 }
@@ -144,7 +155,7 @@ private fun UserDisplayName(state: ProfileState) {
 
     Text(
         text = text,
-        style = MaterialTheme.typography.bodyLarge.copy(
+        style = MaterialTheme.typography.titleLarge.copy(
             fontWeight = FontWeight.Bold,
         ),
     )

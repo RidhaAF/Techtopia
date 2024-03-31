@@ -14,6 +14,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.serializer.KotlinXSerializer
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -37,7 +38,11 @@ object TechtopiaModule {
         return createSupabaseClient(supabaseUrl, supabaseApiKey) {
             install(Auth)
             install(Postgrest)
-            defaultSerializer = KotlinXSerializer()
+            defaultSerializer = KotlinXSerializer(
+                Json {
+                    ignoreUnknownKeys = true
+                },
+            )
         }
     }
 

@@ -96,14 +96,12 @@ class AuthRepositoryImpl @Inject constructor(
 
             val result = auth.retrieveUserForCurrentSession(updateSession = true).identities
             val identities = result?.firstOrNull()
-            val identity = identities?.identityData
             val id = identities?.id ?: ""
-            val user = User()
-            user.id = id
-            user.name = identity?.get("display_name").toString()
-            user.username = identity?.get("username").toString()
-            user.email = identity?.get("email").toString()
-            user.photoUrl = identity?.get("photo_url").toString()
+            val user = supabase.from("users").select {
+                filter {
+                    eq("id", id)
+                }
+            }.decodeSingle<User>()
 
             emit(Resource.Success(user))
         } catch (e: Exception) {
