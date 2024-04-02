@@ -45,12 +45,6 @@ fun SignInScreen(
     val error = state.signInError
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = viewModel.isAuth()) {
-        if (viewModel.isAuth()) {
-            redirectFromAuth(navController)
-        }
-    }
-
     LaunchedEffect(key1 = error) {
         if (error.isNotBlank()) {
             defaultToast(context, error)

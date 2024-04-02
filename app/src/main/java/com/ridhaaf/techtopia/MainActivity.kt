@@ -3,6 +3,7 @@ package com.ridhaaf.techtopia
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -22,19 +24,23 @@ import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
+import com.ridhaaf.techtopia.feature.presentation.splash.SplashViewModel
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val viewModel: SplashViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
+        actionBar?.hide()
         setContent {
             TechtopiaTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    App()
+                    App(viewModel)
                 }
             }
         }
@@ -42,7 +48,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App() {
+fun App(viewModel: SplashViewModel? = null) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -63,7 +69,7 @@ fun App() {
     ) {
         NavHost(
             navController = navController,
-            startDestination = Routes.SIGN_IN,
+            startDestination = viewModel?.initialRoute() ?: Routes.SIGN_IN,
             modifier = Modifier.padding(it)
         ) {
             composable(Routes.SIGN_IN) {
