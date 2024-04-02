@@ -17,7 +17,6 @@ class CategoryRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
 
             val categories = fetchCategoriesFromApi()
-            println("categories: $categories")
 
             if (categories.isEmpty()) {
                 emit(Resource.Error("No categories found"))
@@ -25,7 +24,6 @@ class CategoryRepositoryImpl @Inject constructor(
                 emit(Resource.Success(categories))
             }
         } catch (e: Exception) {
-            println("error: $e")
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
     }
