@@ -1,9 +1,9 @@
 package com.ridhaaf.techtopia.core.presentation.components
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.List
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -35,7 +35,7 @@ data class BottomNavigationBar(
             ),
             BottomNavigationBar(
                 route = Routes.ORDER_LIST,
-                icon = Icons.Rounded.List,
+                icon = Icons.AutoMirrored.Rounded.List,
                 label = "Transaction",
             ),
             BottomNavigationBar(
@@ -54,8 +54,7 @@ fun DefaultBottomNavigation(
 ) {
     NavigationBar {
         BottomNavigationBar().bottomNavigationItems().forEachIndexed { _, navigationItem ->
-            NavigationBarItem(
-                selected = navigationItem.route == currentDestination?.route,
+            NavigationBarItem(selected = navigationItem.route == currentDestination?.route,
                 onClick = {
                     navController.navigate(navigationItem.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
@@ -75,8 +74,7 @@ fun DefaultBottomNavigation(
                     Text(
                         text = navigationItem.label,
                     )
-                }
-            )
+                })
         }
     }
 }

@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,6 +34,7 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
@@ -64,12 +69,26 @@ fun ProfileScreen(
                 DefaultProgressIndicator()
             }
         } else {
+            val refreshing = viewModel.isRefreshing.value
+            val pullRefreshState = rememberPullRefreshState(
+                refreshing = refreshing,
+                onRefresh = { viewModel.onEvent(ProfileEvent.Refresh) },
+            )
+            val verticalScrollState = rememberScrollState()
+
             Box(
                 modifier = modifier
                     .fillMaxSize()
+                    .pullRefresh(pullRefreshState)
+                    .verticalScroll(verticalScrollState)
                     .padding(it),
             ) {
                 ProfileContent(state = state)
+                PullRefreshIndicator(
+                    refreshing = refreshing,
+                    state = pullRefreshState,
+                    modifier = modifier.align(Alignment.TopCenter),
+                )
             }
         }
     }
@@ -98,13 +117,10 @@ private fun TopBar(
 
 @Composable
 private fun ProfileContent(state: ProfileState) {
-    val verticalScrollState = rememberScrollState()
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .verticalScroll(verticalScrollState),
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         UserSection(state)
