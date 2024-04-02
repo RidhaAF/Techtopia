@@ -15,10 +15,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SplashViewModel @Inject constructor(
     private val useCase: AuthUseCase,
-): ViewModel() {
-    private var isAuthenticated by mutableStateOf(false)
-
+) : ViewModel() {
     private fun isAuth(): Boolean {
+        var isAuthenticated by mutableStateOf(false)
+
         viewModelScope.launch {
             useCase.isAuth().collect { result ->
                 isAuthenticated = when (result) {
