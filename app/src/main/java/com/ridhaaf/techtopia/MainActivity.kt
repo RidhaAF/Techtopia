@@ -93,12 +93,16 @@ fun App(viewModel: SplashViewModel? = null) {
                     navController = navController,
                 )
             }
-            composable("${Routes.PRODUCTS}?type={type}") { navBackStack ->
+            composable("${Routes.PRODUCTS}?type={type}&categoryId={categoryId}&categoryName={categoryName}") { navBackStack ->
                 val type = navBackStack.arguments?.getString("type")
+                val categoryId = navBackStack.arguments?.getString("categoryId")
+                val categoryName = navBackStack.arguments?.getString("categoryName")
 
                 ProductScreen(
                     navController = navController,
                     type = type ?: "all",
+                    categoryId = categoryId ?: "0",
+                    categoryName = categoryName ?: "Products",
                 )
             }
         }

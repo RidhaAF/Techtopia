@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.presentation.home.HomeState
 
 @Composable
@@ -40,7 +41,18 @@ fun CategoriesSection(
             items(categories) { category ->
                 CategoryItem(
                     category = category,
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val type = "category"
+                        val categoryId = category.id
+                        val categoryName = category.name
+                        val typeParam = "type=$type"
+                        val categoryIdParam = "categoryId=$categoryId"
+                        val categoryNameParam = "categoryName=$categoryName"
+                        val products = Routes.PRODUCTS
+                        val route = "$products?$typeParam&$categoryIdParam&$categoryNameParam"
+
+                        navController?.navigate(route)
+                    },
                 )
             }
         }

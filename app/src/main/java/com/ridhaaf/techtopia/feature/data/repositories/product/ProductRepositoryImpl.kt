@@ -64,6 +64,27 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getProductsByCategory(categoryId: String): Flow<Resource<List<Product>>> = flow {
+        try {
+            println("categoryId: $categoryId")
+            emit(Resource.Loading())
+
+            val products = fetchProductsFromApi().select {
+                filter {
+                    eq("category_id", categoryId)
+                }
+            }.decodeList<Product>()
+
+            if (products.isEmpty()) {
+                emit(Resource.Error("No products found"))
+            } else {
+                emit(Resource.Success(products))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
     override fun searchProducts(query: String): Flow<Resource<List<Product>>> = flow {
         try {
             emit(Resource.Loading())

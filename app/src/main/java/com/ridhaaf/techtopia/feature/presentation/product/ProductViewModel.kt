@@ -20,11 +20,19 @@ class ProductViewModel @Inject constructor(
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing: State<Boolean> = _isRefreshing
 
-    private fun refresh(type: String = "all") {
-        if (type == "best-seller") {
-            getBestSellingProducts()
-        } else {
-            getProducts()
+    private fun refresh(type: String = "all", categoryId: String) {
+        when (type) {
+            "best-seller" -> {
+                getBestSellingProducts()
+            }
+
+            "category" -> {
+                getProductsByCategory(categoryId)
+            }
+
+            else -> {
+                getProducts()
+            }
         }
     }
 
@@ -86,11 +94,42 @@ class ProductViewModel @Inject constructor(
         }
     }
 
+    private fun getProductsByCategory(categoryId: String) {
+        viewModelScope.launch {
+            productUseCase.getProductsByCategory(categoryId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = emptyList(),
+                            productsError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: ProductEvent) {
         when (event) {
             is ProductEvent.Refresh -> {
                 val type = event.type
-                refresh(type)
+                val categoryId = event.categoryId
+
+                refresh(type, categoryId)
             }
         }
     }

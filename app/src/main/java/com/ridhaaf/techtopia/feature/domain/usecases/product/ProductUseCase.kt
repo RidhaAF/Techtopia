@@ -18,6 +18,10 @@ class ProductUseCase(private val repository: ProductRepository) {
         return repository.getBestSellingProducts()
     }
 
+    fun getProductsByCategory(categoryId: String): Flow<Resource<List<Product>>> {
+        return repository.getProductsByCategory(categoryId)
+    }
+
     fun searchProducts(query: String): Flow<Resource<List<Product>>> {
         return repository.searchProducts(query)
     }

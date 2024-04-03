@@ -38,13 +38,15 @@ fun ProductScreen(
     viewModel: ProductViewModel = hiltViewModel(),
     navController: NavController? = null,
     type: String,
+    categoryId: String,
+    categoryName: String,
 ) {
     val state = viewModel.state.value
     val error = state.productsError
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        viewModel.onEvent(ProductEvent.Refresh(type))
+        viewModel.onEvent(ProductEvent.Refresh(type, categoryId))
     }
 
     LaunchedEffect(key1 = error) {
@@ -54,12 +56,12 @@ fun ProductScreen(
     }
 
     Scaffold(
-        topBar = { ProductTopBar(navController, type) },
+        topBar = { ProductTopBar(navController, type, categoryName) },
     ) {
         val refreshing = viewModel.isRefreshing.value
         val pullRefreshState = rememberPullRefreshState(
             refreshing = refreshing,
-            onRefresh = { viewModel.onEvent(ProductEvent.Refresh(type)) },
+            onRefresh = { viewModel.onEvent(ProductEvent.Refresh(type, categoryId)) },
         )
 
         Box(
@@ -80,8 +82,16 @@ fun ProductScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProductTopBar(navController: NavController? = null, type: String) {
-    val title = if (type == "best-seller") "Best Seller" else "All Products"
+private fun ProductTopBar(
+    navController: NavController? = null,
+    type: String,
+    categoryName: String,
+) {
+    val title = when (type) {
+        "best-seller" -> "Best Seller"
+        "category" -> categoryName
+        else -> "Products"
+    }
 
     DefaultTopAppBar(
         title = title,
