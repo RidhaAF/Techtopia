@@ -10,12 +10,15 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DefaultTopAppBar(
     title: String,
     modifier: Modifier = Modifier,
+    showBackButton: Boolean = false,
+    navController: NavController? = null,
     navigationIcon: @Composable () -> Unit = {},
     isActionsEnabled: Boolean = true,
     actions: @Composable () -> Unit = {},
@@ -24,7 +27,13 @@ fun DefaultTopAppBar(
     TopAppBar(
         title = { Text(text = title) },
         modifier = modifier,
-        navigationIcon = navigationIcon,
+        navigationIcon = {
+            if (showBackButton) {
+                DefaultBackButton(navController)
+            }
+            navigationIcon()
+
+        },
         actions = {
             if (isActionsEnabled) {
                 ActionButton(

@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.techtopia.core.presentation.components.DefaultBackButton
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
@@ -95,7 +94,8 @@ private fun ProductTopBar(
 
     DefaultTopAppBar(
         title = title,
-        navigationIcon = { DefaultBackButton(navController) },
+        showBackButton = true,
+        navController = navController,
     )
 }
 
@@ -120,7 +120,7 @@ private fun ProductContent(
                 DefaultProgressIndicator()
             }
         } else if (!products.isNullOrEmpty()) {
-            ProductGrid(products)
+            ProductGrid(products, navController)
         } else {
             DefaultErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -131,7 +131,10 @@ private fun ProductContent(
 }
 
 @Composable
-private fun ProductGrid(products: List<Product>) {
+private fun ProductGrid(
+    products: List<Product>,
+    navController: NavController? = null,
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
@@ -140,7 +143,10 @@ private fun ProductGrid(products: List<Product>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(products) { product ->
-            ProductItem(product = product)
+            ProductItem(
+                product = product,
+                navController = navController,
+            )
         }
     }
 }

@@ -24,6 +24,7 @@ import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.feature.presentation.product.ProductScreen
+import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailScreen
 import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
 import com.ridhaaf.techtopia.feature.presentation.splash.SplashViewModel
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
@@ -103,6 +104,14 @@ fun App(viewModel: SplashViewModel? = null) {
                     type = type ?: "all",
                     categoryId = categoryId ?: "0",
                     categoryName = categoryName ?: "Products",
+                )
+            }
+            composable("${Routes.PRODUCT}/{id}") { navBackStack ->
+                val id = navBackStack.arguments?.getString("id")
+
+                ProductDetailScreen(
+                    navController = navController,
+                    id = id ?: "0",
                 )
             }
         }

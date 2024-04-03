@@ -53,7 +53,7 @@ fun ProductsSection(
                     Text(text = "See more")
                 }
             }
-            ProductsList(products = products)
+            ProductsList(products = products, navController)
         }
     } else {
         DefaultErrorText(
