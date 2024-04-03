@@ -20,12 +20,41 @@ class ProductViewModel @Inject constructor(
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing: State<Boolean> = _isRefreshing
 
-    init {
-        refresh()
+    private fun refresh(type: String = "all") {
+        if (type == "best-seller") {
+            getBestSellingProducts()
+        } else {
+            getProducts()
+        }
     }
 
-    private fun refresh() {
-        getProducts()
+    private fun getBestSellingProducts() {
+        viewModelScope.launch {
+            productUseCase.getBestSellingProducts().collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = emptyList(),
+                            productsError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getProducts() {
@@ -59,8 +88,9 @@ class ProductViewModel @Inject constructor(
 
     fun onEvent(event: ProductEvent) {
         when (event) {
-            ProductEvent.Refresh -> {
-                refresh()
+            is ProductEvent.Refresh -> {
+                val type = event.type
+                refresh(type)
             }
         }
     }

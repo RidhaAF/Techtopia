@@ -46,7 +46,10 @@ fun ProductsSection(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                TextButton(onClick = { navController?.navigate(Routes.PRODUCTS) }) {
+                TextButton(onClick = {
+                    val type = if (title == "Best Seller") "best-seller" else "all"
+                    navController?.navigate("${Routes.PRODUCTS}?type=$type")
+                }) {
                     Text(text = "See more")
                 }
             }
