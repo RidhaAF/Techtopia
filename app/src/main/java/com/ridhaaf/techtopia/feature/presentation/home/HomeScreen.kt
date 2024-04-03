@@ -32,6 +32,7 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.ProductsSection
 import com.ridhaaf.techtopia.core.presentation.components.VerticalSpacer
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
+import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -96,8 +97,8 @@ private fun HomeContent(state: HomeState) {
     ) {
         HomeBanner()
         CategoriesSection(state)
-        BestSeller()
-        AllProducts()
+        BestSeller(state)
+        AllProducts(state)
         VerticalSpacer()
     }
 }
@@ -109,7 +110,10 @@ private fun HomeBanner() {
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.inversePrimary,
-                shape = RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp),
+                shape = RoundedCornerShape(
+                    bottomStart = 8.dp,
+                    bottomEnd = 8.dp,
+                ),
             )
     ) {
         Banner()
@@ -117,21 +121,47 @@ private fun HomeBanner() {
 }
 
 @Composable
-private fun BestSeller() {
-    HomeProductsSection(title = "Best Seller")
+private fun BestSeller(state: HomeState) {
+    val loading = state.isBestSellerLoading
+    val products = state.bestSellerSuccess
+    val error = state.bestSellerError
+
+    HomeProductsSection(
+        loading = loading,
+        products = products,
+        error = error,
+        title = "Best Seller",
+    )
 }
 
 @Composable
-private fun AllProducts() {
-    HomeProductsSection(title = "All Products")
+private fun AllProducts(state: HomeState) {
+    val loading = state.isProductsLoading
+    val products = state.productsSuccess
+    val error = state.productsError
+
+    HomeProductsSection(
+        loading = loading,
+        products = products,
+        error = error,
+        title = "All Products",
+    )
 }
 
 @Composable
-private fun HomeProductsSection(title: String) {
+private fun HomeProductsSection(
+    loading: Boolean,
+    products: List<Product>?,
+    error: String,
+    title: String,
+) {
     ProductsSection(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
+        loading = loading,
+        products = products,
+        error = error,
         title = title,
     )
 }

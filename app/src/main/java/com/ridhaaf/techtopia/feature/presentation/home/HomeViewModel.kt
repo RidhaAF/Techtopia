@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ridhaaf.techtopia.core.utils.Resource
 import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val categoryUseCase: CategoryUseCase,
+    private val productUseCase: ProductUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(HomeState())
     val state: State<HomeState> = _state
@@ -26,6 +28,8 @@ class HomeViewModel @Inject constructor(
 
     private fun refresh() {
         getCategories()
+        getBestSellingProducts()
+        getProducts()
     }
 
     private fun getCategories() {
@@ -50,6 +54,64 @@ class HomeViewModel @Inject constructor(
                             isCategoriesLoading = false,
                             categoriesSuccess = emptyList(),
                             categoriesError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getBestSellingProducts() {
+        viewModelScope.launch {
+            productUseCase.getBestSellingProducts().collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isBestSellerLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isBestSellerLoading = false,
+                            bestSellerSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isBestSellerLoading = false,
+                            bestSellerSuccess = emptyList(),
+                            bestSellerError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getProducts() {
+        viewModelScope.launch {
+            productUseCase.getProducts().collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isProductsLoading = false,
+                            productsSuccess = emptyList(),
+                            productsError = result.message ?: "Oops, something went wrong!",
                         )
                     }
                 }

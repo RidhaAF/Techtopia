@@ -7,12 +7,7 @@ import com.ridhaaf.techtopia.feature.data.models.product.Product
 @Composable
 fun ProductItem(product: Product) {
     Card {
-        ProductImage()
-        ProductDetail(
-            name = product.name,
-            rating = product.rating,
-            sold = product.sold,
-            price = product.price,
-        )
+        ProductImage(product)
+        ProductDetail(product)
     }
 }
