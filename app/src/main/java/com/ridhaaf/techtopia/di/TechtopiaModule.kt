@@ -1,8 +1,11 @@
 package com.ridhaaf.techtopia.di
 
 import com.ridhaaf.techtopia.feature.data.repositories.auth.AuthRepositoryImpl
+import com.ridhaaf.techtopia.feature.data.repositories.category.CategoryRepositoryImpl
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
+import com.ridhaaf.techtopia.feature.domain.repositories.category.CategoryRepository
 import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,5 +63,21 @@ object TechtopiaModule {
         supabase: SupabaseClient,
     ): AuthRepository {
         return AuthRepositoryImpl(supabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCategoryUseCase(
+        repository: CategoryRepository,
+    ): CategoryUseCase {
+        return CategoryUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCategoryRepository(
+        supabase: SupabaseClient,
+    ): CategoryRepository {
+        return CategoryRepositoryImpl(supabase)
     }
 }
