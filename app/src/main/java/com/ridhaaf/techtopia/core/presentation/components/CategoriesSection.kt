@@ -12,10 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ridhaaf.techtopia.feature.presentation.home.HomeState
 
 @Composable
-fun CategoriesSection(state: HomeState) {
+fun CategoriesSection(
+    state: HomeState,
+    navController: NavController? = null,
+) {
     val loading = state.isCategoriesLoading
     val categories = state.categoriesSuccess
     val error = state.categoriesError

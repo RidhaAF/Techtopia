@@ -11,7 +11,7 @@ fun ActionButton(
     icon: ImageVector,
     desc: String,
 ) {
-    IconButton(onClick = onClick) {
+    IconButton(onClick = { onClick() }) {
         Icon(
             imageVector = icon,
             contentDescription = desc,

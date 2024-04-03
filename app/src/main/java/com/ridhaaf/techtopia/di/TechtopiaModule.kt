@@ -42,7 +42,9 @@ object TechtopiaModule {
         val supabaseApiKey = dotenv["SUPABASE_API_KEY"]
 
         return createSupabaseClient(supabaseUrl, supabaseApiKey) {
-            install(Auth)
+            install(Auth) {
+                alwaysAutoRefresh = true
+            }
             install(Postgrest)
             defaultSerializer = KotlinXSerializer(
                 Json {

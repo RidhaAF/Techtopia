@@ -13,6 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @Composable
@@ -22,6 +24,7 @@ fun ProductsSection(
     products: List<Product>?,
     error: String,
     title: String,
+    navController: NavController? = null,
 ) {
     if (loading) {
         Box(
@@ -43,7 +46,7 @@ fun ProductsSection(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                 )
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = { navController?.navigate(Routes.PRODUCTS) }) {
                     Text(text = "See more")
                 }
             }

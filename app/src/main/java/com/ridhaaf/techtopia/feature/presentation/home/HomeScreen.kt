@@ -1,5 +1,6 @@
 package com.ridhaaf.techtopia.feature.presentation.home
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,14 +43,7 @@ fun HomeScreen(
     navController: NavController? = null,
 ) {
     val state = viewModel.state.value
-    val categoriesError = state.categoriesError
     val context = LocalContext.current
-
-    LaunchedEffect(key1 = categoriesError) {
-        if (categoriesError.isNotBlank()) {
-            defaultToast(context, categoriesError)
-        }
-    }
 
     Scaffold(
         topBar = { HomeTopBar() },
@@ -68,7 +62,7 @@ fun HomeScreen(
                 .verticalScroll(verticalScrollState)
                 .padding(it),
         ) {
-            HomeContent(state)
+            HomeContent(state, context, navController)
             PullRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
@@ -90,15 +84,19 @@ private fun HomeTopBar() {
 }
 
 @Composable
-private fun HomeContent(state: HomeState) {
+private fun HomeContent(
+    state: HomeState,
+    context: Context,
+    navController: NavController? = null,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         HomeBanner()
-        CategoriesSection(state)
-        BestSeller(state)
-        AllProducts(state)
+        Categories(state, context, navController)
+        BestSeller(state, context, navController)
+        AllProducts(state, context, navController)
         VerticalSpacer()
     }
 }
@@ -121,7 +119,28 @@ private fun HomeBanner() {
 }
 
 @Composable
-private fun BestSeller(state: HomeState) {
+private fun Categories(
+    state: HomeState,
+    context: Context,
+    navController: NavController? = null,
+) {
+    val error = state.categoriesError
+
+    CategoriesSection(state, navController)
+
+    LaunchedEffect(key1 = error) {
+        if (error.isNotBlank()) {
+            defaultToast(context, error)
+        }
+    }
+}
+
+@Composable
+private fun BestSeller(
+    state: HomeState,
+    context: Context,
+    navController: NavController? = null,
+) {
     val loading = state.isBestSellerLoading
     val products = state.bestSellerSuccess
     val error = state.bestSellerError
@@ -131,11 +150,22 @@ private fun BestSeller(state: HomeState) {
         products = products,
         error = error,
         title = "Best Seller",
+        navController = navController,
     )
+
+    LaunchedEffect(key1 = error) {
+        if (error.isNotBlank()) {
+            defaultToast(context, error)
+        }
+    }
 }
 
 @Composable
-private fun AllProducts(state: HomeState) {
+private fun AllProducts(
+    state: HomeState,
+    context: Context,
+    navController: NavController? = null,
+) {
     val loading = state.isProductsLoading
     val products = state.productsSuccess
     val error = state.productsError
@@ -145,7 +175,14 @@ private fun AllProducts(state: HomeState) {
         products = products,
         error = error,
         title = "All Products",
+        navController = navController,
     )
+
+    LaunchedEffect(key1 = error) {
+        if (error.isNotBlank()) {
+            defaultToast(context, error)
+        }
+    }
 }
 
 @Composable
@@ -154,6 +191,7 @@ private fun HomeProductsSection(
     products: List<Product>?,
     error: String,
     title: String,
+    navController: NavController? = null,
 ) {
     ProductsSection(
         modifier = Modifier
@@ -163,5 +201,6 @@ private fun HomeProductsSection(
         products = products,
         error = error,
         title = title,
+        navController = navController,
     )
 }
