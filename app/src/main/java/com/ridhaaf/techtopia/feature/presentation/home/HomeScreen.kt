@@ -46,7 +46,7 @@ fun HomeScreen(
     val context = LocalContext.current
 
     Scaffold(
-        topBar = { HomeTopBar() },
+        topBar = { HomeTopBar(navController) },
     ) {
         val refreshing = viewModel.isRefreshing.value
         val pullRefreshState = rememberPullRefreshState(
@@ -74,9 +74,10 @@ fun HomeScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeTopBar() {
+private fun HomeTopBar(navController: NavController? = null) {
     DefaultTopAppBar(
         title = "Techtopia",
+        navController = navController,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.inversePrimary,
         ),

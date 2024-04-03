@@ -26,6 +26,7 @@ import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.feature.presentation.product.ProductScreen
 import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailScreen
 import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
+import com.ridhaaf.techtopia.feature.presentation.search.SearchScreen
 import com.ridhaaf.techtopia.feature.presentation.splash.SplashViewModel
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -112,6 +113,11 @@ fun App(viewModel: SplashViewModel? = null) {
                 ProductDetailScreen(
                     navController = navController,
                     id = id ?: "0",
+                )
+            }
+            composable(Routes.SEARCH) {
+                SearchScreen(
+                    navController = navController,
                 )
             }
         }

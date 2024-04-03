@@ -3,12 +3,8 @@ package com.ridhaaf.techtopia.feature.presentation.product
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -26,9 +22,8 @@ import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
-import com.ridhaaf.techtopia.core.presentation.components.ProductItem
+import com.ridhaaf.techtopia.core.presentation.components.ProductGrid
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
-import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -125,27 +120,6 @@ private fun ProductContent(
             DefaultErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 message = error,
-            )
-        }
-    }
-}
-
-@Composable
-private fun ProductGrid(
-    products: List<Product>,
-    navController: NavController? = null,
-) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(products) { product ->
-            ProductItem(
-                product = product,
-                navController = navController,
             )
         }
     }
