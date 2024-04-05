@@ -1,6 +1,7 @@
 package com.ridhaaf.techtopia.feature.presentation.home
 
 import com.ridhaaf.techtopia.feature.data.models.category.Category
+import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 data class HomeState(
     val isBannerLoading: Boolean = false,
@@ -10,9 +11,9 @@ data class HomeState(
     val categoriesSuccess: List<Category>? = null,
     val categoriesError: String = "",
     val isBestSellerLoading: Boolean = false,
-    val bestSellerSuccess: Boolean = false,
+    val bestSellerSuccess: List<Product>? = null,
     val bestSellerError: String = "",
     val isProductsLoading: Boolean = false,
-    val productsSuccess: Boolean = false,
+    val productsSuccess: List<Product>? = null,
     val productsError: String = "",
 )

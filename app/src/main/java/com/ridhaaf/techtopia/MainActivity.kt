@@ -23,7 +23,10 @@ import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
+import com.ridhaaf.techtopia.feature.presentation.product.ProductScreen
+import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailScreen
 import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
+import com.ridhaaf.techtopia.feature.presentation.search.SearchScreen
 import com.ridhaaf.techtopia.feature.presentation.splash.SplashViewModel
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -89,6 +92,31 @@ fun App(viewModel: SplashViewModel? = null) {
             }
             composable(Routes.PROFILE) {
                 ProfileScreen(
+                    navController = navController,
+                )
+            }
+            composable("${Routes.PRODUCTS}?type={type}&categoryId={categoryId}&categoryName={categoryName}") { navBackStack ->
+                val type = navBackStack.arguments?.getString("type")
+                val categoryId = navBackStack.arguments?.getString("categoryId")
+                val categoryName = navBackStack.arguments?.getString("categoryName")
+
+                ProductScreen(
+                    navController = navController,
+                    type = type ?: "all",
+                    categoryId = categoryId ?: "0",
+                    categoryName = categoryName ?: "Products",
+                )
+            }
+            composable("${Routes.PRODUCT}/{id}") { navBackStack ->
+                val id = navBackStack.arguments?.getString("id")
+
+                ProductDetailScreen(
+                    navController = navController,
+                    id = id ?: "0",
+                )
+            }
+            composable(Routes.SEARCH) {
+                SearchScreen(
                     navController = navController,
                 )
             }
