@@ -8,6 +8,7 @@ import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductReposito
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.PostgrestQueryBuilder
 import kotlinx.coroutines.flow.Flow
@@ -112,24 +113,22 @@ class ProductRepositoryImpl @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            val userId = supabase.auth.currentUserOrNull()?.id ?: ""
+            val userId = getUserId()
             val cartId = getOrCreateCartId(userId)
             val cartItem = fetchCartItem(productId, cartId)
 
             if (cartItem == null) {
-                val newCartItem = CartItem(
-                    cartId = cartId,
-                    productId = productId,
-                    quantity = 1,
+                val newCartItem = mapOf(
+                    "cart_id" to cartId,
+                    "product_id" to productId,
+                    "quantity" to 1,
                 )
                 fetchCartItemsFromApi().insert(newCartItem)
             } else {
                 val newQuantity = cartItem.quantity + 1
-                fetchCartItemsFromApi().update(
-                    {
-                        set("quantity", newQuantity)
-                    }
-                ) {
+                fetchCartItemsFromApi().update({
+                    set("quantity", newQuantity)
+                }) {
                     filter {
                         eq("id", cartItem.id)
                         eq("cart_id", cartId)
@@ -141,6 +140,59 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(Unit))
         } catch (e: Exception) {
             println("error: ${e.localizedMessage}")
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun removeProductFromCart(productId: String): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val userId = getUserId()
+            val cartId = getOrCreateCartId(userId)
+            val cartItem = fetchCartItem(productId, cartId)
+
+            if (cartItem == null) {
+                emit(Resource.Error("Product not found in cart"))
+            } else {
+                fetchCartItemsFromApi().delete {
+                    filter {
+                        eq("id", cartItem.id)
+                    }
+                }
+
+                emit(Resource.Success(Unit))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun getCart(): Flow<Resource<Cart>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val userId = getUserId()
+            val cartId = getOrCreateCartId(userId)
+            val columns = Columns.raw(
+                "id, cart_id, products(*), quantity"
+            )
+            val cartItems = fetchCartItemsFromApi().select(
+                columns = columns
+            ) {
+                filter {
+                    eq("cart_id", cartId)
+                }
+            }.decodeList<CartItem>().reversed()
+
+            val cart = Cart(
+                id = cartId,
+                userId = userId,
+                items = cartItems,
+            )
+
+            emit(Resource.Success(cart))
+        } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
     }
@@ -168,6 +220,10 @@ class ProductRepositoryImpl @Inject constructor(
                 eq("product_id", productId)
             }
         }.decodeList<CartItem>().firstOrNull()
+    }
+
+    private fun getUserId(): String {
+        return supabase.auth.currentUserOrNull()?.id ?: ""
     }
 
     private fun fetchProductsFromApi(): PostgrestQueryBuilder {

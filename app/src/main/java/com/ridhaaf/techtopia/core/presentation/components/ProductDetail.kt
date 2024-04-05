@@ -19,7 +19,7 @@ fun ProductDetail(product: Product) {
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        ProductName(name = name)
+        ProductName(name = name, maxLines = 20)
         ProductRating(rating = rating, sold = sold)
         ProductPrice(price = price)
     }

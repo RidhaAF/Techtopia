@@ -1,6 +1,7 @@
 package com.ridhaaf.techtopia.feature.domain.repositories.product
 
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.data.models.cart.Cart
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 import kotlinx.coroutines.flow.Flow
 
@@ -11,4 +12,6 @@ interface ProductRepository {
     fun getProductsByCategory(categoryId: String): Flow<Resource<List<Product>>>
     fun searchProducts(query: String): Flow<Resource<List<Product>>>
     fun addProductToCart(productId: String): Flow<Resource<Unit>>
+    fun removeProductFromCart(productId: String): Flow<Resource<Unit>>
+    fun getCart(): Flow<Resource<Cart>>
 }

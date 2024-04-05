@@ -12,14 +12,16 @@ import coil.compose.AsyncImage
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @Composable
-fun ProductImage(product: Product) {
+fun ProductImage(
+    modifier: Modifier = Modifier,
+    product: Product,
+) {
     val image = product.imagesUrl.firstOrNull()
     val name = product.name
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
-            .height(160.dp)
             .background(color = MaterialTheme.colorScheme.secondary)
     ) {
         AsyncImage(

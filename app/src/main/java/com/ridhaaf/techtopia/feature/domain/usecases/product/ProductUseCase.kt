@@ -1,6 +1,7 @@
 package com.ridhaaf.techtopia.feature.domain.usecases.product
 
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.data.models.cart.Cart
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductRepository
 import kotlinx.coroutines.flow.Flow
@@ -28,5 +29,13 @@ class ProductUseCase(private val repository: ProductRepository) {
 
     fun addProductToCart(productId: String): Flow<Resource<Unit>> {
         return repository.addProductToCart(productId)
+    }
+
+    fun removeProductFromCart(productId: String): Flow<Resource<Unit>> {
+        return repository.removeProductFromCart(productId)
+    }
+
+    fun getCart(): Flow<Resource<Cart>> {
+        return repository.getCart()
     }
 }
