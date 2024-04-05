@@ -113,32 +113,8 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Loading())
 
             val userId = supabase.auth.currentUserOrNull()?.id ?: ""
-            val carts = fetchCartsFromApi().select {
-                filter {
-                    eq("user_id", userId)
-                }
-            }.decodeList<Cart>()
-
-            if (carts.isEmpty()) {
-                fetchCartsFromApi().insert(
-                    mapOf(
-                        "user_id" to userId,
-                    )
-                )
-            }
-
-            val cartId = fetchCartsFromApi().select {
-                filter {
-                    eq("user_id", userId)
-                }
-            }.decodeSingle<Cart>().id
-
-            val cartItem = fetchCartItemsFromApi().select {
-                filter {
-                    eq("cart_id", cartId)
-                    eq("product_id", productId)
-                }
-            }.decodeList<CartItem>().firstOrNull()
+            val cartId = getOrCreateCartId(userId)
+            val cartItem = fetchCartItem(productId, cartId)
 
             if (cartItem == null) {
                 val newCartItem = CartItem(
@@ -167,6 +143,31 @@ class ProductRepositoryImpl @Inject constructor(
             println("error: ${e.localizedMessage}")
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }
+    }
+
+    private suspend fun getOrCreateCartId(userId: String): String {
+        val carts = fetchCartsFromApi().select {
+            filter {
+                eq("user_id", userId)
+            }
+        }.decodeList<Cart>()
+
+        if (carts.isEmpty()) {
+            val newCart = mapOf("user_id" to userId)
+            val insertedCart = fetchCartsFromApi().insert(newCart)
+            return insertedCart.decodeSingle<Cart>().id
+        }
+
+        return carts.first().id
+    }
+
+    private suspend fun fetchCartItem(productId: String, cartId: String): CartItem? {
+        return fetchCartItemsFromApi().select {
+            filter {
+                eq("cart_id", cartId)
+                eq("product_id", productId)
+            }
+        }.decodeList<CartItem>().firstOrNull()
     }
 
     private fun fetchProductsFromApi(): PostgrestQueryBuilder {
