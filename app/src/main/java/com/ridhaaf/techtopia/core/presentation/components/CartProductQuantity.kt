@@ -14,14 +14,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ridhaaf.techtopia.feature.data.models.product.Product
 import com.ridhaaf.techtopia.feature.presentation.cart.CartEvent
 import com.ridhaaf.techtopia.feature.presentation.cart.CartViewModel
 
 @Composable
 fun CartProductQuantity(
     viewModel: CartViewModel,
+    product: Product,
     quantity: String,
 ) {
+    val id = product.id
+    val stock = product.stock
+
     Row(
         modifier = Modifier
             .border(
@@ -37,7 +42,10 @@ fun CartProductQuantity(
             imageVector = Icons.Rounded.Remove,
             desc = "Reduce",
             onClick = {
-                viewModel.onEvent(CartEvent.ReduceQuantity(quantity))
+                if (quantity == "1") {
+                    return@ProductQuantityIcon
+                }
+                viewModel.onEvent(CartEvent.ReduceQuantity(id))
             },
         )
         Text(
@@ -48,7 +56,10 @@ fun CartProductQuantity(
             imageVector = Icons.Rounded.Add,
             desc = "Increase",
             onClick = {
-                viewModel.onEvent(CartEvent.AddQuantity(quantity))
+                if (quantity.toInt() == stock) {
+                    return@ProductQuantityIcon
+                }
+                viewModel.onEvent(CartEvent.AddQuantity(id))
             },
         )
     }

@@ -14,4 +14,6 @@ interface ProductRepository {
     fun addProductToCart(productId: String): Flow<Resource<Unit>>
     fun removeProductFromCart(productId: String): Flow<Resource<Unit>>
     fun getCart(): Flow<Resource<Cart>>
+    fun addProductQuantity(productId: String): Flow<Resource<Unit>>
+    fun reduceProductQuantity(productId: String): Flow<Resource<Unit>>
 }

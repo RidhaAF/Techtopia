@@ -118,10 +118,10 @@ class ProductRepositoryImpl @Inject constructor(
             val cartItem = fetchCartItem(productId, cartId)
 
             if (cartItem == null) {
-                val newCartItem = mapOf(
-                    "cart_id" to cartId,
-                    "product_id" to productId,
-                    "quantity" to 1,
+                val newCartItem = CartItem(
+                    cartId = cartId,
+                    productId = productId,
+                    quantity = 1,
                 )
                 fetchCartItemsFromApi().insert(newCartItem)
             } else {
@@ -192,6 +192,64 @@ class ProductRepositoryImpl @Inject constructor(
             )
 
             emit(Resource.Success(cart))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun addProductQuantity(productId: String): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val userId = getUserId()
+            val cartId = getOrCreateCartId(userId)
+            val cartItem = fetchCartItem(productId, cartId)
+
+            if (cartItem == null) {
+                emit(Resource.Error("Product not found in cart"))
+            } else {
+                val newQuantity = cartItem.quantity + 1
+                fetchCartItemsFromApi().update({
+                    set("quantity", newQuantity)
+                }) {
+                    filter {
+                        eq("id", cartItem.id)
+                        eq("cart_id", cartId)
+                        eq("product_id", productId)
+                    }
+                }
+
+                emit(Resource.Success(Unit))
+            }
+        } catch (e: Exception) {
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
+    override fun reduceProductQuantity(productId: String): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val userId = getUserId()
+            val cartId = getOrCreateCartId(userId)
+            val cartItem = fetchCartItem(productId, cartId)
+
+            if (cartItem == null) {
+                emit(Resource.Error("Product not found in cart"))
+            } else {
+                val newQuantity = cartItem.quantity - 1
+                fetchCartItemsFromApi().update({
+                    set("quantity", newQuantity)
+                }) {
+                    filter {
+                        eq("id", cartItem.id)
+                        eq("cart_id", cartId)
+                        eq("product_id", productId)
+                    }
+                }
+
+                emit(Resource.Success(Unit))
+            }
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         }

@@ -74,6 +74,7 @@ fun CartProductItem(
             )
             CartProductQuantity(
                 viewModel = viewModel,
+                product = product,
                 quantity = quantity,
             )
         }

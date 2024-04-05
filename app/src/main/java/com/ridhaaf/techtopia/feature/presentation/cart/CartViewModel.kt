@@ -53,15 +53,115 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    private fun addProductQuantity(productId: String) {
+        viewModelScope.launch {
+            useCase.addProductQuantity(productId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isAddProductQuantityLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isAddProductQuantityLoading = false,
+                            addProductQuantitySuccess = result.data,
+                        )
+                        refresh()
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isAddProductQuantityLoading = false,
+                            addProductQuantitySuccess = null,
+                            addProductQuantityError = result.message
+                                ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun reduceProductQuantity(productId: String) {
+        viewModelScope.launch {
+            useCase.reduceProductQuantity(productId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isReduceProductQuantityLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isReduceProductQuantityLoading = false,
+                            reduceProductQuantitySuccess = result.data,
+                        )
+                        refresh()
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isReduceProductQuantityLoading = false,
+                            reduceProductQuantitySuccess = null,
+                            reduceProductQuantityError = result.message
+                                ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeProduct(productId: String) {
+        viewModelScope.launch {
+            useCase.removeProductFromCart(productId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isRemoveProductLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isRemoveProductLoading = false,
+                            removeProductSuccess = result.data,
+                        )
+                        refresh()
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isRemoveProductLoading = false,
+                            removeProductSuccess = null,
+                            removeProductError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: CartEvent) {
         when (event) {
             is CartEvent.Refresh -> {
                 refresh()
             }
 
-            is CartEvent.AddQuantity -> TODO()
-            is CartEvent.ReduceQuantity -> TODO()
-            is CartEvent.RemoveProduct -> TODO()
+            is CartEvent.AddQuantity -> {
+                addProductQuantity(event.productId)
+            }
+
+            is CartEvent.ReduceQuantity -> {
+                reduceProductQuantity(event.productId)
+            }
+
+            is CartEvent.RemoveProduct -> {
+                removeProduct(event.productId)
+            }
         }
     }
 }

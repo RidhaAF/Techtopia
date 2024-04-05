@@ -38,4 +38,12 @@ class ProductUseCase(private val repository: ProductRepository) {
     fun getCart(): Flow<Resource<Cart>> {
         return repository.getCart()
     }
+
+    fun addProductQuantity(productId: String): Flow<Resource<Unit>> {
+        return repository.addProductQuantity(productId)
+    }
+
+    fun reduceProductQuantity(productId: String): Flow<Resource<Unit>> {
+        return repository.reduceProductQuantity(productId)
+    }
 }
