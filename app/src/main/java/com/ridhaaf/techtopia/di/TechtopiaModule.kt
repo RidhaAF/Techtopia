@@ -49,6 +49,7 @@ object TechtopiaModule {
             defaultSerializer = KotlinXSerializer(
                 Json {
                     ignoreUnknownKeys = true
+                    coerceInputValues = true
                 },
             )
         }

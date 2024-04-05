@@ -53,12 +53,47 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun addProductToCart(productId: String) {
+        viewModelScope.launch {
+            productUseCase.addProductToCart(productId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isCartLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isCartLoading = false,
+                            cartSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isCartLoading = false,
+                            cartSuccess = null,
+                            cartError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: ProductDetailEvent) {
         when (event) {
             is ProductDetailEvent.Refresh -> {
                 val id = event.id
 
                 refresh(id)
+            }
+
+            is ProductDetailEvent.AddToCart -> {
+                val id = event.productId
+
+                addProductToCart(id)
             }
         }
     }

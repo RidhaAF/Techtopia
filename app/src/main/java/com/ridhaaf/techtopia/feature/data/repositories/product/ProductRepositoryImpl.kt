@@ -1,9 +1,12 @@
 package com.ridhaaf.techtopia.feature.data.repositories.product
 
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.data.models.cart.Cart
+import com.ridhaaf.techtopia.feature.data.models.cart.CartItem
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductRepository
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.query.Order
 import io.github.jan.supabase.postgrest.query.PostgrestQueryBuilder
@@ -105,7 +108,76 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun addProductToCart(productId: String): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+
+            val userId = supabase.auth.currentUserOrNull()?.id ?: ""
+            val carts = fetchCartsFromApi().select {
+                filter {
+                    eq("user_id", userId)
+                }
+            }.decodeList<Cart>()
+
+            if (carts.isEmpty()) {
+                fetchCartsFromApi().insert(
+                    mapOf(
+                        "user_id" to userId,
+                    )
+                )
+            }
+
+            val cartId = fetchCartsFromApi().select {
+                filter {
+                    eq("user_id", userId)
+                }
+            }.decodeSingle<Cart>().id
+
+            val cartItem = fetchCartItemsFromApi().select {
+                filter {
+                    eq("cart_id", cartId)
+                    eq("product_id", productId)
+                }
+            }.decodeList<CartItem>().firstOrNull()
+
+            if (cartItem == null) {
+                val newCartItem = CartItem(
+                    cartId = cartId,
+                    productId = productId,
+                    quantity = 1,
+                )
+                fetchCartItemsFromApi().insert(newCartItem)
+            } else {
+                val newQuantity = cartItem.quantity + 1
+                fetchCartItemsFromApi().update(
+                    {
+                        set("quantity", newQuantity)
+                    }
+                ) {
+                    filter {
+                        eq("id", cartItem.id)
+                        eq("cart_id", cartId)
+                        eq("product_id", productId)
+                    }
+                }
+            }
+
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            println("error: ${e.localizedMessage}")
+            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+        }
+    }
+
     private fun fetchProductsFromApi(): PostgrestQueryBuilder {
         return supabase.from("products")
+    }
+
+    private fun fetchCartsFromApi(): PostgrestQueryBuilder {
+        return supabase.from("carts")
+    }
+
+    private fun fetchCartItemsFromApi(): PostgrestQueryBuilder {
+        return supabase.from("cart_items")
     }
 }

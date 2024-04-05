@@ -25,4 +25,8 @@ class ProductUseCase(private val repository: ProductRepository) {
     fun searchProducts(query: String): Flow<Resource<List<Product>>> {
         return repository.searchProducts(query)
     }
+
+    fun addProductToCart(productId: String): Flow<Resource<Unit>> {
+        return repository.addProductToCart(productId)
+    }
 }

@@ -1,5 +1,6 @@
 package com.ridhaaf.techtopia.feature.presentation.product.product_detail
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -88,7 +89,7 @@ fun ProductDetailScreen(
                 .verticalScroll(verticalScrollState)
                 .padding(it),
         ) {
-            ProductDetailContent(state)
+            ProductDetailContent(viewModel, state)
             PullRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
@@ -109,10 +110,14 @@ private fun ProductDetailTopBar(navController: NavController? = null) {
 }
 
 @Composable
-private fun ProductDetailContent(state: ProductDetailState) {
+private fun ProductDetailContent(
+    viewModel: ProductDetailViewModel,
+    state: ProductDetailState,
+) {
     val loading = state.isProductLoading
     val product = state.productSuccess
     val error = state.productError
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -127,7 +132,7 @@ private fun ProductDetailContent(state: ProductDetailState) {
             }
         } else if (product != null) {
             ProductDetailSection(product)
-            AddToCartSection(product)
+            AddToCartSection(viewModel, state, context, product)
         } else {
             DefaultErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -234,7 +239,12 @@ private fun ProductDetailContent(product: Product) {
 }
 
 @Composable
-private fun AddToCartSection(product: Product) {
+private fun AddToCartSection(
+    viewModel: ProductDetailViewModel,
+    state: ProductDetailState,
+    context: Context,
+    product: Product,
+) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -242,14 +252,31 @@ private fun AddToCartSection(product: Product) {
             .background(MaterialTheme.colorScheme.inverseOnSurface),
         contentAlignment = Alignment.Center,
     ) {
+        val loading = state.isCartLoading
+        val success = state.cartSuccess
+        val error = state.cartError
+
         DefaultButton(
             modifier = Modifier.padding(horizontal = 16.dp),
-            onClick = { /*TODO*/ },
+            onClick = {
+                val id = product.id
+                viewModel.onEvent(ProductDetailEvent.AddToCart(id))
+            },
         ) {
+            val text = if (loading) "Adding to cart..." else "+ Cart"
+
             Text(
-                "+ Cart",
+                text,
                 fontWeight = FontWeight.Bold,
             )
+        }
+
+        LaunchedEffect(key1 = state) {
+            if (success != null) {
+                defaultToast(context, "Successfully added to cart")
+            } else if (error.isNotBlank()) {
+                defaultToast(context, error)
+            }
         }
     }
 }
