@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.ridhaaf.techtopia.core.presentation.components.DefaultButton
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
@@ -125,6 +127,7 @@ private fun ProductDetailContent(state: ProductDetailState) {
             }
         } else if (product != null) {
             ProductDetailSection(product)
+            AddToCartSection(product)
         } else {
             DefaultErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),
@@ -227,5 +230,26 @@ private fun ProductDetailContent(product: Product) {
             description = product.description,
         )
         VerticalSpacer()
+    }
+}
+
+@Composable
+private fun AddToCartSection(product: Product) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .height(64.dp)
+            .background(MaterialTheme.colorScheme.inverseOnSurface),
+        contentAlignment = Alignment.Center,
+    ) {
+        DefaultButton(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            onClick = { /*TODO*/ },
+        ) {
+            Text(
+                "+ Cart",
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
