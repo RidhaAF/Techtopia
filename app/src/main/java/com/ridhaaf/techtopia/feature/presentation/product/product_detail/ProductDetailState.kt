@@ -9,4 +9,7 @@ data class ProductDetailState(
     val isCartLoading: Boolean = false,
     val cartSuccess: Unit? = null,
     val cartError: String = "",
+    val isWishlistLoading: Boolean = false,
+    val wishlistSuccess: Unit? = null,
+    val wishlistError: String = "",
 )

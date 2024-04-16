@@ -17,14 +17,22 @@ fun AddToCartButton(
     product: Product,
     loading: Boolean,
 ) {
+    val stock = product.stock
+    val enabled = stock > 0 && !loading
+
     DefaultButton(
         modifier = modifier.padding(horizontal = 16.dp),
         onClick = {
             val id = product.id
             viewModel.onEvent(ProductDetailEvent.AddToCart(id))
         },
+        enabled = enabled,
     ) {
-        val text = if (loading) "Adding to cart..." else "+ Cart"
+        val text: String = when {
+            loading -> "Adding to cart..."
+            stock == 0 -> "Out of Stock"
+            else -> "+ Cart"
+        }
 
         Text(
             text,

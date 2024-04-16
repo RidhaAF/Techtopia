@@ -14,4 +14,6 @@ data class Product(
     val sold: Int = 0,
     val stock: Int = 0,
     @SerialName("category_id") val categoryId: String = "",
+    val isWishlist: Boolean = false,
+    val wishlistId: String = "",
 )

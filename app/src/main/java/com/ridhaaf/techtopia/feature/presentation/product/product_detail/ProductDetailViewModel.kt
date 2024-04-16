@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ridhaaf.techtopia.core.utils.Resource
 import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.wishlist.WishlistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,6 +16,7 @@ import javax.inject.Inject
 class ProductDetailViewModel @Inject constructor(
     private val productUseCase: ProductUseCase,
     private val cartUseCase: CartUseCase,
+    private val wishlistUseCase: WishlistUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(ProductDetailState())
     val state: State<ProductDetailState> = _state
@@ -84,6 +86,69 @@ class ProductDetailViewModel @Inject constructor(
         }
     }
 
+    private fun addProductToWishlist(productId: String) {
+        viewModelScope.launch {
+            wishlistUseCase.addWishlist(productId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = false,
+                            wishlistSuccess = result.data,
+                        )
+                        refresh(productId)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = false,
+                            wishlistSuccess = null,
+                            wishlistError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun removeProductFromWishlist(
+        productId: String,
+        wishlistId: String,
+    ) {
+        viewModelScope.launch {
+            wishlistUseCase.removeWishlist(wishlistId).collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = false,
+                            wishlistSuccess = result.data,
+                        )
+                        refresh(productId)
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isWishlistLoading = false,
+                            wishlistSuccess = null,
+                            wishlistError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: ProductDetailEvent) {
         when (event) {
             is ProductDetailEvent.Refresh -> {
@@ -96,6 +161,22 @@ class ProductDetailViewModel @Inject constructor(
                 val id = event.productId
 
                 addProductToCart(id)
+            }
+
+            is ProductDetailEvent.AddToWishlist -> {
+                val id = event.productId
+
+                addProductToWishlist(id)
+            }
+
+            is ProductDetailEvent.RemoveFromWishlist -> {
+                val id = event.productId
+                val wishlistId = event.wishlistId
+
+                removeProductFromWishlist(
+                    productId = id,
+                    wishlistId = wishlistId,
+                )
             }
         }
     }

@@ -102,7 +102,11 @@ private fun ProductDetailContent(
         }
     } else if (product != null) {
         Box {
-            ProductDetailSection(product)
+            ProductDetailSection(
+                viewModel = viewModel,
+                context = context,
+                product = product,
+            )
             Column {
                 Spacer(modifier = Modifier.weight(1f))
                 AddToCartSection(

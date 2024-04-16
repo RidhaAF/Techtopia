@@ -29,6 +29,7 @@ import com.ridhaaf.techtopia.feature.presentation.product.product_detail.Product
 import com.ridhaaf.techtopia.feature.presentation.profile.ProfileScreen
 import com.ridhaaf.techtopia.feature.presentation.search.SearchScreen
 import com.ridhaaf.techtopia.feature.presentation.splash.SplashViewModel
+import com.ridhaaf.techtopia.feature.presentation.wishlist.WishlistScreen
 import com.ridhaaf.techtopia.ui.theme.TechtopiaTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -88,6 +89,11 @@ fun App(viewModel: SplashViewModel? = null) {
             }
             composable(Routes.HOME) {
                 HomeScreen(
+                    navController = navController,
+                )
+            }
+            composable(Routes.WISHLIST) {
+                WishlistScreen(
                     navController = navController,
                 )
             }

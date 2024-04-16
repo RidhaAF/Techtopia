@@ -4,14 +4,17 @@ import com.ridhaaf.techtopia.feature.data.repositories.auth.AuthRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.cart.CartRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.category.CategoryRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.product.ProductRepositoryImpl
+import com.ridhaaf.techtopia.feature.data.repositories.wishlist.WishlistRepositoryImpl
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.cart.CartRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.category.CategoryRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductRepository
+import com.ridhaaf.techtopia.feature.domain.repositories.wishlist.WishlistRepository
 import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.wishlist.WishlistUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -120,5 +123,21 @@ object TechtopiaModule {
         supabase: SupabaseClient,
     ): CartRepository {
         return CartRepositoryImpl(supabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWishlistUseCase(
+        repository: WishlistRepository,
+    ): WishlistUseCase {
+        return WishlistUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWishlistRepository(
+        supabase: SupabaseClient,
+    ): WishlistRepository {
+        return WishlistRepositoryImpl(supabase)
     }
 }
