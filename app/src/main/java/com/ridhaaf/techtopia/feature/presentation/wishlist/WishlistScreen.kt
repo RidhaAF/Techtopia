@@ -22,7 +22,7 @@ import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
-import com.ridhaaf.techtopia.core.presentation.components.ProductGrid
+import com.ridhaaf.techtopia.core.presentation.components.WishlistGrid
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -106,8 +106,11 @@ private fun WishlistContent(
                 DefaultProgressIndicator()
             }
         } else if (!wishlists.isNullOrEmpty()) {
-            val products = wishlists.map { it.product }
-            ProductGrid(products, navController)
+            WishlistGrid(
+                viewModel = viewModel,
+                wishlists = wishlists,
+                navController = navController,
+            )
         } else {
             DefaultErrorText(
                 modifier = Modifier.padding(horizontal = 16.dp),

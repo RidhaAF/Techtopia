@@ -54,13 +54,45 @@ class WishlistViewModel @Inject constructor(
         }
     }
 
+    private fun removeFromWishlist(id: String) {
+        viewModelScope.launch {
+            useCase.removeWishlist(id).collectLatest { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isRemoveLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isRemoveLoading = false,
+                            removeSuccess = result.data,
+                        )
+                        refresh()
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isRemoveLoading = false,
+                            removeSuccess = null,
+                            removeError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     fun onEvent(event: WishlistEvent) {
         when (event) {
             is WishlistEvent.Refresh -> {
                 refresh()
             }
 
-            is WishlistEvent.Remove -> TODO()
+            is WishlistEvent.Remove -> {
+                removeFromWishlist(event.id)
+            }
         }
     }
 }
