@@ -1,8 +1,7 @@
-package com.ridhaaf.techtopia.feature.presentation.product.product_detail
+package com.ridhaaf.techtopia.feature.presentation.cart
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
@@ -19,27 +18,25 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.techtopia.core.presentation.components.AddToCartSection
+import com.ridhaaf.techtopia.core.presentation.components.CartSection
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
-import com.ridhaaf.techtopia.core.presentation.components.ProductDetailSection
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ProductDetailScreen(
+fun CartScreen(
     modifier: Modifier = Modifier,
-    viewModel: ProductDetailViewModel = hiltViewModel(),
+    viewModel: CartViewModel = hiltViewModel(),
     navController: NavController? = null,
-    id: String,
 ) {
     val state = viewModel.state.value
-    val error = state.productError
+    val error = state.cartError
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = Unit) {
-        viewModel.onEvent(ProductDetailEvent.Refresh(id))
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(CartEvent.Refresh)
     }
 
     LaunchedEffect(key1 = error) {
@@ -49,12 +46,12 @@ fun ProductDetailScreen(
     }
 
     Scaffold(
-        topBar = { ProductDetailTopBar(navController) },
+        topBar = { CartTopBar(navController) },
     ) {
         val refreshing = viewModel.isRefreshing.value
         val pullRefreshState = rememberPullRefreshState(
             refreshing = refreshing,
-            onRefresh = { viewModel.onEvent(ProductDetailEvent.Refresh(id)) },
+            onRefresh = { viewModel.onEvent(CartEvent.Refresh) },
         )
 
         Box(
@@ -63,7 +60,7 @@ fun ProductDetailScreen(
                 .pullRefresh(pullRefreshState)
                 .padding(it),
         ) {
-            ProductDetailContent(viewModel, state)
+            CartContent(viewModel, state, context, navController)
             PullRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
@@ -75,23 +72,24 @@ fun ProductDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProductDetailTopBar(navController: NavController? = null) {
+private fun CartTopBar(navController: NavController? = null) {
     DefaultTopAppBar(
-        title = "",
+        title = "Cart",
         showBackButton = true,
         navController = navController,
     )
 }
 
 @Composable
-private fun ProductDetailContent(
-    viewModel: ProductDetailViewModel,
-    state: ProductDetailState,
+private fun CartContent(
+    viewModel: CartViewModel,
+    state: CartState,
+    context: Context,
+    navController: NavController? = null,
 ) {
-    val loading = state.isProductLoading
-    val product = state.productSuccess
-    val error = state.productError
-    val context = LocalContext.current
+    val loading = state.isCartLoading
+    val cart = state.cartSuccess
+    val error = state.cartError
 
     if (loading) {
         Box(
@@ -100,19 +98,14 @@ private fun ProductDetailContent(
         ) {
             DefaultProgressIndicator()
         }
-    } else if (product != null) {
-        Box {
-            ProductDetailSection(product)
-            Column {
-                Spacer(modifier = Modifier.weight(1f))
-                AddToCartSection(
-                    viewModel = viewModel,
-                    state = state,
-                    context = context,
-                    product = product,
-                )
-            }
-        }
+    } else if (cart != null) {
+        CartSection(
+            viewModel = viewModel,
+            state = state,
+            cart = cart,
+            context = context,
+            navController = navController
+        )
     } else {
         DefaultErrorText(
             modifier = Modifier.padding(horizontal = 16.dp),

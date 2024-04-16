@@ -17,7 +17,7 @@ fun ProductName(
     maxLines: Int = 1,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
-    val text = if (isLimited) textLimit(name, 20) else name
+    val text = if (isLimited) textLimit(name, maxLines) else name
 
     Text(
         text = text,

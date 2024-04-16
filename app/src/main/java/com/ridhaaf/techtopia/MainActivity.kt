@@ -22,6 +22,7 @@ import com.ridhaaf.techtopia.core.presentation.components.DefaultBottomNavigatio
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_in.SignInScreen
 import com.ridhaaf.techtopia.feature.presentation.auth.sign_up.SignUpScreen
+import com.ridhaaf.techtopia.feature.presentation.cart.CartScreen
 import com.ridhaaf.techtopia.feature.presentation.home.HomeScreen
 import com.ridhaaf.techtopia.feature.presentation.product.ProductScreen
 import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailScreen
@@ -117,6 +118,11 @@ fun App(viewModel: SplashViewModel? = null) {
             }
             composable(Routes.SEARCH) {
                 SearchScreen(
+                    navController = navController,
+                )
+            }
+            composable(Routes.CART) {
+                CartScreen(
                     navController = navController,
                 )
             }

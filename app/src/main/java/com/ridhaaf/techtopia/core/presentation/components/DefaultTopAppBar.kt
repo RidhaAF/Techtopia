@@ -46,7 +46,7 @@ fun DefaultTopAppBar(
                     desc = "Search",
                 )
                 ActionButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { navController?.navigate(Routes.CART) },
                     icon = Icons.Rounded.ShoppingCart,
                     desc = "Cart",
                 )
