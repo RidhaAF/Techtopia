@@ -1,5 +1,6 @@
 package com.ridhaaf.techtopia.core.presentation.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ridhaaf.techtopia.feature.data.models.product.Product
+import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailViewModel
 
 @Composable
-fun ProductDetailContentSection(product: Product) {
+fun ProductDetailContentSection(
+    viewModel: ProductDetailViewModel,
+    context: Context,
+    product: Product,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -41,7 +47,11 @@ fun ProductDetailContentSection(product: Product) {
                 isLimited = false,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            WishlistButton()
+            WishlistButton(
+                viewModel = viewModel,
+                context = context,
+                product = product,
+            )
         }
         Row(
             modifier = Modifier
