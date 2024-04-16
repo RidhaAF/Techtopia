@@ -53,7 +53,7 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            TopBar(
+            ProfileTopBar(
                 viewModel = viewModel,
                 state = state,
                 navController = navController,
@@ -96,7 +96,7 @@ fun ProfileScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(
+private fun ProfileTopBar(
     viewModel: ProfileViewModel,
     state: ProfileState,
     navController: NavController?,
@@ -104,6 +104,7 @@ private fun TopBar(
 ) {
     DefaultTopAppBar(
         title = "Profile",
+        navController = navController,
         actions = {
             SignOutButton(
                 viewModel = viewModel,

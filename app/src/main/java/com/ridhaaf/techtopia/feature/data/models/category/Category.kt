@@ -1,6 +1,9 @@
 package com.ridhaaf.techtopia.feature.data.models.category
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Category(
-    val id: Int,
-    val name: String,
+    val id: String = "",
+    val name: String = "",
 )

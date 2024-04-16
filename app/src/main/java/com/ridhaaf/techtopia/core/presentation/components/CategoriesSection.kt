@@ -1,35 +1,65 @@
 package com.ridhaaf.techtopia.core.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.ridhaaf.techtopia.feature.data.models.category.Category
+import androidx.navigation.NavController
+import com.ridhaaf.techtopia.core.presentation.routes.Routes
+import com.ridhaaf.techtopia.feature.presentation.home.HomeState
 
 @Composable
-fun CategoriesSection() {
-    val categories = listOf(
-        Category(1, "Phones"),
-        Category(2, "Laptops"),
-        Category(3, "Tablets"),
-        Category(4, "Accessories"),
-        Category(5, "Smart Home"),
-    )
+fun CategoriesSection(
+    state: HomeState,
+    navController: NavController? = null,
+) {
+    val loading = state.isCategoriesLoading
+    val categories = state.categoriesSuccess
+    val error = state.categoriesError
 
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp),
-    ) {
-        items(categories) { category ->
-            CategoryItem(
-                category = category,
-                onClick = { /*TODO*/ },
-            )
+    if (loading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            DefaultProgressIndicator()
         }
+    } else if (!categories.isNullOrEmpty()) {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+        ) {
+            items(categories) { category ->
+                CategoryItem(
+                    category = category,
+                    onClick = {
+                        val type = "category"
+                        val categoryId = category.id
+                        val categoryName = category.name
+                        val typeParam = "type=$type"
+                        val categoryIdParam = "categoryId=$categoryId"
+                        val categoryNameParam = "categoryName=$categoryName"
+                        val products = Routes.PRODUCTS
+                        val route = "$products?$typeParam&$categoryIdParam&$categoryNameParam"
+
+                        navController?.navigate(route)
+                    },
+                )
+            }
+        }
+    } else {
+        DefaultErrorText(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            message = error,
+        )
     }
 }

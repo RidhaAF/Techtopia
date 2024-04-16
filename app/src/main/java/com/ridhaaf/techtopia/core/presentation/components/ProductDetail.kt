@@ -6,19 +6,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.ridhaaf.techtopia.feature.data.models.product.Product
 
 @Composable
-fun ProductDetail(
-    name: String,
-    rating: Double,
-    sold: Int,
-    price: Double,
-) {
+fun ProductDetail(product: Product) {
+    val name = product.name
+    val rating = product.rating
+    val sold = product.sold
+    val price = product.price
+
     Column(
         modifier = Modifier.padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        ProductName(name = name)
+        ProductName(name = name, maxLines = 20)
         ProductRating(rating = rating, sold = sold)
         ProductPrice(price = price)
     }

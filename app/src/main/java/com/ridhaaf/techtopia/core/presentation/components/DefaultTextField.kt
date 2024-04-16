@@ -21,6 +21,7 @@ fun DefaultTextField(
     readOnly: Boolean = false,
     placeholder: String,
     isObscure: Boolean = false,
+    leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     TextField(
@@ -31,6 +32,7 @@ fun DefaultTextField(
         readOnly = readOnly,
         placeholder = { Text(text = placeholder) },
         visualTransformation = if (isObscure) PasswordVisualTransformation() else VisualTransformation.None,
+        leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.colors(
