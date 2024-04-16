@@ -1,12 +1,15 @@
 package com.ridhaaf.techtopia.di
 
 import com.ridhaaf.techtopia.feature.data.repositories.auth.AuthRepositoryImpl
+import com.ridhaaf.techtopia.feature.data.repositories.cart.CartRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.category.CategoryRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.product.ProductRepositoryImpl
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
+import com.ridhaaf.techtopia.feature.domain.repositories.cart.CartRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.category.CategoryRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductRepository
 import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
 import dagger.Module
@@ -101,5 +104,21 @@ object TechtopiaModule {
         supabase: SupabaseClient,
     ): ProductRepository {
         return ProductRepositoryImpl(supabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartUseCase(
+        repository: CartRepository,
+    ): CartUseCase {
+        return CartUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCartRepository(
+        supabase: SupabaseClient,
+    ): CartRepository {
+        return CartRepositoryImpl(supabase)
     }
 }

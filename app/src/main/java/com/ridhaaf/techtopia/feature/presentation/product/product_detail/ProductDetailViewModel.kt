@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductDetailViewModel @Inject constructor(
     private val productUseCase: ProductUseCase,
+    private val cartUseCase: CartUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(ProductDetailState())
     val state: State<ProductDetailState> = _state
@@ -55,7 +57,7 @@ class ProductDetailViewModel @Inject constructor(
 
     private fun addProductToCart(productId: String) {
         viewModelScope.launch {
-            productUseCase.addProductToCart(productId).collect { result ->
+            cartUseCase.addProductToCart(productId).collect { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _state.value = _state.value.copy(

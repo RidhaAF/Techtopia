@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ridhaaf.techtopia.core.utils.Resource
-import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val useCase: ProductUseCase,
+    private val useCase: CartUseCase,
 ) : ViewModel() {
     private val _state = mutableStateOf(CartState())
     val state: State<CartState> = _state
