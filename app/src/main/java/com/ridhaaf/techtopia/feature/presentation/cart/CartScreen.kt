@@ -60,7 +60,12 @@ fun CartScreen(
                 .pullRefresh(pullRefreshState)
                 .padding(it),
         ) {
-            CartContent(viewModel, state, context, navController)
+            CartContent(
+                viewModel = viewModel,
+                state = state,
+                context = context,
+                navController = navController,
+            )
             PullRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,

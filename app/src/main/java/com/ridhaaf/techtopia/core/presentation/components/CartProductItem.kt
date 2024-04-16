@@ -33,6 +33,9 @@ fun CartProductItem(
     context: Context,
     navController: NavController? = null,
 ) {
+    val success = state.removeProductSuccess
+    val error = state.removeProductError
+
     val product = item.product
     val id = product.id
     val name = product.name
@@ -74,6 +77,7 @@ fun CartProductItem(
             )
             CartProductQuantity(
                 viewModel = viewModel,
+                context = context,
                 product = product,
                 quantity = quantity,
             )
@@ -85,9 +89,12 @@ fun CartProductItem(
             tint = MaterialTheme.colorScheme.error,
         )
 
-        LaunchedEffect(key1 = Unit) {
-            if (state.removeProductSuccess != null) {
+        LaunchedEffect(key1 = success != null, key2 = error) {
+            if (success != null) {
                 defaultToast(context, "Item removed from cart")
+                viewModel.onEvent(CartEvent.ResetRemoveProductState)
+            } else if (error.isNotBlank()) {
+                defaultToast(context, error)
             }
         }
     }

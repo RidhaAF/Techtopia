@@ -1,5 +1,6 @@
 package com.ridhaaf.techtopia.core.presentation.components
 
+import android.content.Context
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import com.ridhaaf.techtopia.feature.presentation.cart.CartViewModel
 @Composable
 fun CartProductQuantity(
     viewModel: CartViewModel,
+    context: Context,
     product: Product,
     quantity: String,
 ) {
@@ -57,6 +59,7 @@ fun CartProductQuantity(
             desc = "Increase",
             onClick = {
                 if (quantity.toInt() == stock) {
+                    defaultToast(context, "Stock is limited")
                     return@ProductQuantityIcon
                 }
                 viewModel.onEvent(CartEvent.AddQuantity(id))

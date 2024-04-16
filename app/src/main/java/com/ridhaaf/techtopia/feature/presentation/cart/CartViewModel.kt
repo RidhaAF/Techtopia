@@ -145,6 +145,14 @@ class CartViewModel @Inject constructor(
         }
     }
 
+    private fun resetRemoveProductState() {
+        _state.value = _state.value.copy(
+            isRemoveProductLoading = false,
+            removeProductSuccess = null,
+            removeProductError = "",
+        )
+    }
+
     fun onEvent(event: CartEvent) {
         when (event) {
             is CartEvent.Refresh -> {
@@ -161,6 +169,10 @@ class CartViewModel @Inject constructor(
 
             is CartEvent.RemoveProduct -> {
                 removeProduct(event.productId)
+            }
+
+            is CartEvent.ResetRemoveProductState -> {
+                resetRemoveProductState()
             }
         }
     }
