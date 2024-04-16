@@ -21,17 +21,13 @@ class WishlistViewModel @Inject constructor(
     private val _isRefreshing = mutableStateOf(false)
     val isRefreshing: State<Boolean> = _isRefreshing
 
-    init {
-        refresh()
-    }
-
     private fun refresh() {
         getWishlistByUserId()
     }
 
     private fun getWishlistByUserId() {
         viewModelScope.launch {
-            useCase.getWishlistByUserId().collectLatest { result ->
+            useCase.getWishlistsByUserId().collectLatest { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _state.value = _state.value.copy(

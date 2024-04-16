@@ -6,8 +6,8 @@ import com.ridhaaf.techtopia.feature.domain.repositories.wishlist.WishlistReposi
 import kotlinx.coroutines.flow.Flow
 
 class WishlistUseCase(private val repository: WishlistRepository) {
-    fun getWishlistByUserId(): Flow<Resource<List<Wishlist>>> {
-        return repository.getWishlistByUserId()
+    fun getWishlistsByUserId(): Flow<Resource<List<Wishlist>>> {
+        return repository.getWishlistsByUserId()
     }
 
     fun addWishlist(productId: String): Flow<Resource<Unit>> {

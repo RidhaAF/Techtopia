@@ -127,9 +127,14 @@ class ProductRepositoryImpl @Inject constructor(
 
     private suspend fun isProductInUserWishlist(productId: String): Pair<Boolean, String> {
         val userId = getUserId()
-        val columns = Columns.raw("id, user_id, product_id, products(*)")
-        val wishlist = fetchWishlistsFromApi().select(columns = columns) {
-            filter { and { eq("user_id", userId); eq("product_id", productId) } }
+        val columns = Columns.raw("(*), products(*)")
+        val wishlist = fetchWishlistsFromApi().select(columns) {
+            filter {
+                and {
+                    eq("user_id", userId)
+                    eq("product_id", productId)
+                }
+            }
         }.decodeSingleOrNull<Wishlist>()
 
         val isProductInWishlist = wishlist != null
