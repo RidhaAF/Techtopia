@@ -4,12 +4,14 @@ import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import com.ridhaaf.techtopia.feature.data.models.product.Product
 import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailEvent
 import com.ridhaaf.techtopia.feature.presentation.product.product_detail.ProductDetailViewModel
@@ -50,6 +52,7 @@ fun WishlistButton(
         },
         icon = icon,
         desc = desc,
+        tint = if (isWishlist) Color.Red else LocalContentColor.current,
     )
 
     LaunchedEffect(key1 = success != null, key2 = error) {
