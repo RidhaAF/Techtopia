@@ -12,7 +12,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Logout
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.ActionButton
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
+import com.ridhaaf.techtopia.core.presentation.components.DefaultRefreshIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 import com.ridhaaf.techtopia.core.presentation.routes.Routes
@@ -84,10 +84,9 @@ fun ProfileScreen(
                     .padding(it),
             ) {
                 ProfileContent(state = state)
-                PullRefreshIndicator(
+                DefaultRefreshIndicator(
                     refreshing = refreshing,
                     state = pullRefreshState,
-                    modifier = modifier.align(Alignment.TopCenter),
                 )
             }
         }

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +20,7 @@ import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.CartSection
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
+import com.ridhaaf.techtopia.core.presentation.components.DefaultRefreshIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
 
@@ -66,10 +66,9 @@ fun CartScreen(
                 context = context,
                 navController = navController,
             )
-            PullRefreshIndicator(
+            DefaultRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
-                modifier = modifier.align(Alignment.TopCenter),
             )
         }
     }

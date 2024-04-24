@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +21,7 @@ import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.AddToCartSection
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
+import com.ridhaaf.techtopia.core.presentation.components.DefaultRefreshIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.ProductDetailSection
 import com.ridhaaf.techtopia.core.presentation.components.defaultToast
@@ -64,10 +64,9 @@ fun ProductDetailScreen(
                 .padding(it),
         ) {
             ProductDetailContent(viewModel, state)
-            PullRefreshIndicator(
+            DefaultRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
-                modifier = modifier.align(Alignment.TopCenter),
             )
         }
     }

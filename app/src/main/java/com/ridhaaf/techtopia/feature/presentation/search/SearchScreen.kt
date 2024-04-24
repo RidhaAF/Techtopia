@@ -10,7 +10,6 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Cancel
 import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ridhaaf.techtopia.core.presentation.components.DefaultErrorText
 import com.ridhaaf.techtopia.core.presentation.components.DefaultProgressIndicator
+import com.ridhaaf.techtopia.core.presentation.components.DefaultRefreshIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
 import com.ridhaaf.techtopia.core.presentation.components.ProductGrid
 import com.ridhaaf.techtopia.core.presentation.components.SearchTextField
@@ -59,10 +59,9 @@ fun SearchScreen(
                 .padding(it),
         ) {
             SearchContent(state, query, navController)
-            PullRefreshIndicator(
+            DefaultRefreshIndicator(
                 refreshing = refreshing,
                 state = pullRefreshState,
-                modifier = modifier.align(Alignment.TopCenter),
             )
         }
     }
