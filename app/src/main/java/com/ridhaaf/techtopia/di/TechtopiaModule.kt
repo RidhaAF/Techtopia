@@ -1,16 +1,19 @@
 package com.ridhaaf.techtopia.di
 
 import com.ridhaaf.techtopia.feature.data.repositories.auth.AuthRepositoryImpl
+import com.ridhaaf.techtopia.feature.data.repositories.banner.BannerRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.cart.CartRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.category.CategoryRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.product.ProductRepositoryImpl
 import com.ridhaaf.techtopia.feature.data.repositories.wishlist.WishlistRepositoryImpl
 import com.ridhaaf.techtopia.feature.domain.repositories.auth.AuthRepository
+import com.ridhaaf.techtopia.feature.domain.repositories.banner.BannerRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.cart.CartRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.category.CategoryRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.product.ProductRepository
 import com.ridhaaf.techtopia.feature.domain.repositories.wishlist.WishlistRepository
 import com.ridhaaf.techtopia.feature.domain.usecases.auth.AuthUseCase
+import com.ridhaaf.techtopia.feature.domain.usecases.banner.BannerUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.cart.CartUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
@@ -139,5 +142,21 @@ object TechtopiaModule {
         supabase: SupabaseClient,
     ): WishlistRepository {
         return WishlistRepositoryImpl(supabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBannerUseCase(
+        repository: BannerRepository,
+    ): BannerUseCase {
+        return BannerUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBannerRepository(
+        supabase: SupabaseClient,
+    ): BannerRepository {
+        return BannerRepositoryImpl(supabase)
     }
 }

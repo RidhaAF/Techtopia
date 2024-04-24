@@ -25,7 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ridhaaf.techtopia.core.presentation.components.Banner
+import com.ridhaaf.techtopia.core.presentation.components.BannerSection
 import com.ridhaaf.techtopia.core.presentation.components.CategoriesSection
 import com.ridhaaf.techtopia.core.presentation.components.DefaultRefreshIndicator
 import com.ridhaaf.techtopia.core.presentation.components.DefaultTopAppBar
@@ -92,7 +92,7 @@ private fun HomeContent(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        HomeBanner()
+        HomeBanner(state)
         Categories(state, context, navController)
         BestSeller(state, context, navController)
         AllProducts(state, context, navController)
@@ -101,7 +101,7 @@ private fun HomeContent(
 }
 
 @Composable
-private fun HomeBanner() {
+private fun HomeBanner(state: HomeState) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,7 +113,7 @@ private fun HomeBanner() {
                 ),
             )
     ) {
-        Banner()
+        BannerSection(state)
     }
 }
 
