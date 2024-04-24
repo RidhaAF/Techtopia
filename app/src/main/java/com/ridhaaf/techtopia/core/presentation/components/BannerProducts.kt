@@ -42,5 +42,6 @@ fun BannerProducts(images: List<Banner>) {
                 contentScale = ContentScale.Crop,
             )
         }
+        HorizontalPagerIndicator(state = pagerState)
     }
 }
