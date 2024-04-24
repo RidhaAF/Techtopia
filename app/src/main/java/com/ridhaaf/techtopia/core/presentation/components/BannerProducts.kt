@@ -9,12 +9,14 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ridhaaf.techtopia.feature.data.models.banner.Banner
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -23,6 +25,15 @@ fun BannerProducts(images: List<Banner>) {
         initialPage = 1,
         pageCount = { images.size },
     )
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(5000)
+            pagerState.animateScrollToPage(
+                page = (pagerState.currentPage + 1) % images.size,
+            )
+        }
+    }
 
     Column {
         HorizontalPager(
