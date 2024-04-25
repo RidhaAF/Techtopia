@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,7 +38,7 @@ fun HorizontalPagerIndicator(
     ) {
         repeat(state.pageCount) { i ->
             val color =
-                if (state.currentPage == i) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.secondary
+                if (state.currentPage == i) Color.White else MaterialTheme.colorScheme.secondary
 
             Box(
                 modifier = Modifier
