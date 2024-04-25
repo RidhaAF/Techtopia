@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -75,6 +76,9 @@ fun HomeScreen(
 private fun HomeTopBar(navController: NavController? = null) {
     DefaultTopAppBar(
         title = "Techtopia",
+        textStyle = MaterialTheme.typography.titleLarge.copy(
+            fontWeight = FontWeight.Bold,
+        ),
         navController = navController,
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.inversePrimary,
