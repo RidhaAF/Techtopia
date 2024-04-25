@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ridhaaf.techtopia.core.utils.Resource
+import com.ridhaaf.techtopia.feature.domain.usecases.banner.BannerUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.category.CategoryUseCase
 import com.ridhaaf.techtopia.feature.domain.usecases.product.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    private val bannerUseCase: BannerUseCase,
     private val categoryUseCase: CategoryUseCase,
     private val productUseCase: ProductUseCase,
 ) : ViewModel() {
@@ -27,9 +29,39 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun refresh() {
+        getBanners()
         getCategories()
         getBestSellingProducts()
         getProducts()
+    }
+
+    private fun getBanners() {
+        viewModelScope.launch {
+            bannerUseCase.getBanners().collect { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _state.value = _state.value.copy(
+                            isBannerLoading = true,
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = _state.value.copy(
+                            isBannerLoading = false,
+                            bannerSuccess = result.data,
+                        )
+                    }
+
+                    is Resource.Error -> {
+                        _state.value = _state.value.copy(
+                            isBannerLoading = false,
+                            bannerSuccess = emptyList(),
+                            bannerError = result.message ?: "Oops, something went wrong!",
+                        )
+                    }
+                }
+            }
+        }
     }
 
     private fun getCategories() {
